@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete Core Java Guide — Notes #1</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #222222;
+    --accent: #f59e0b;
+    --accent2: #fb923c;
+    --accent3: #34d399;
+    --accent4: #60a5fa;
+    --accent5: #a78bfa;
+    --red: #f87171;
+    --text: #e5e5e5;
+    --text-dim: #9ca3af;
+    --border: #333;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ---- Hero ---- */
+  .hero {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(245,158,11,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 50%, rgba(96,165,250,0.06) 0%, transparent 60%);
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0.35rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p { font-size: 1.15rem; color: var(--text-dim); max-width: 620px; }
+  .session-meta {
+    margin-top: 2rem;
+    display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center;
+  }
+  .session-meta span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    background: var(--surface);
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  /* ---- TOC ---- */
+  .toc { max-width: 840px; margin: 0 auto 4rem; padding: 0 2rem; }
+  .toc h2 {
+    font-size: 1.4rem; color: var(--accent); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.5rem;
+  }
+  .toc-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 0.7rem 1rem;
+    border-radius: 4px;
+    font-size: 0.88rem;
+    transition: border-color 0.2s;
+  }
+  .toc-item:hover { border-left-color: var(--accent3); }
+  .toc-item .num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent); font-size: 0.72rem; margin-right: 0.5rem;
+  }
+
+  /* ---- Main ---- */
+  .content { max-width: 880px; margin: 0 auto; padding: 0 2rem 6rem; }
+
+  /* ---- Section ---- */
+  .section { margin-bottom: 4.5rem; }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.5rem;
+  }
+  .section h2 { font-size: 2rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.2; }
+  .section h3 { font-size: 1.25rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--accent3); }
+  .section h4 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 0.6rem; color: var(--accent4); }
+  .section p, .section li { margin-bottom: 0.9rem; color: var(--text); }
+
+  /* ---- Callouts ---- */
+  .callout {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.25rem 1.5rem; margin: 1.5rem 0;
+    position: relative;
+  }
+  .callout::before { position: absolute; top: -10px; left: 16px; font-size: 1.2rem; }
+  .callout.tip   { border-left: 3px solid var(--accent3); }
+  .callout.tip::before   { content: "💡"; }
+  .callout.warn  { border-left: 3px solid var(--accent); }
+  .callout.warn::before  { content: "⚠️"; }
+  .callout.fun   { border-left: 3px solid var(--accent5); }
+  .callout.fun::before   { content: "🎉"; }
+  .callout.brain { border-left: 3px solid var(--accent4); }
+  .callout.brain::before { content: "🧠"; }
+  .callout.coffee{ border-left: 3px solid var(--accent2); }
+  .callout.coffee::before{ content: "☕"; }
+  .callout.error { border-left: 3px solid var(--red); }
+  .callout.error::before { content: "❌"; }
+  .callout.check { border-left: 3px solid var(--accent3); }
+  .callout.check::before { content: "✅"; }
+  .callout strong { color: var(--accent); }
+  .callout .title { font-weight: 700; margin-bottom: 0.4rem; font-size: 0.95rem; }
+  .callout .body  { font-size: 0.9rem; color: var(--text-dim); line-height: 1.65; }
+
+  .handwriting {
+    font-family: 'Caveat', cursive; font-size: 1.3rem;
+    color: var(--accent); transform: rotate(-1deg); display: inline-block;
+  }
+
+  /* ---- Code ---- */
+  .code-block {
+    background: #111; border: 1px solid var(--border);
+    border-radius: 6px; overflow: hidden; margin: 1rem 0;
+  }
+  .code-header {
+    background: var(--surface2); padding: 0.5rem 1rem;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+    color: var(--text-dim); display: flex; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .code-header .lang { color: var(--accent); font-weight: 600; }
+  pre {
+    padding: 1.25rem; overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; line-height: 1.7;
+  }
+  .kw   { color: #c084fc; }
+  .type { color: #60a5fa; }
+  .str  { color: #34d399; }
+  .cmt  { color: #6b7280; font-style: italic; }
+  .num  { color: #fb923c; }
+  .fn   { color: #fbbf24; }
+  .punct{ color: #9ca3af; }
+
+  /* ---- Diagrams ---- */
+  .diagram {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 2rem; margin: 2rem 0; overflow-x: auto;
+  }
+  .diagram-title {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 1.5rem; text-align: center;
+  }
+  .arch-svg { display: block; margin: 0 auto; max-width: 100%; }
+
+  /* ---- Table ---- */
+  .dt-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.86rem; }
+  .dt-table th {
+    background: var(--surface2); color: var(--accent);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.73rem;
+    letter-spacing: 1px; text-transform: uppercase;
+    text-align: left; padding: 0.75rem 1rem; border-bottom: 2px solid var(--accent);
+  }
+  .dt-table td { padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-dim); }
+  .dt-table tr:hover td { background: var(--surface); color: var(--text); }
+  .dt-table .type-name { font-family: 'JetBrains Mono', monospace; color: var(--accent4); font-weight: 600; }
+  .cat { font-size: 0.72rem; padding: 0.15rem 0.5rem; border-radius: 3px; font-weight: 600; }
+  .cat-int   { background: rgba(96,165,250,0.15);  color: var(--accent4); }
+  .cat-float { background: rgba(52,211,153,0.15);  color: var(--accent3); }
+  .cat-char  { background: rgba(167,139,250,0.15); color: var(--accent5); }
+  .cat-bool  { background: rgba(248,113,113,0.15); color: var(--red);     }
+
+  /* ---- Extensions table ---- */
+  .ext-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.86rem; }
+  .ext-table th {
+    background: var(--surface2); color: var(--accent3);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.73rem;
+    text-align: left; padding: 0.6rem 1rem; border-bottom: 2px solid var(--accent3);
+  }
+  .ext-table td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-dim); }
+
+  /* ---- VS grid ---- */
+  .vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+  .vs-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 1.25rem;
+  }
+  .vs-card h4 { font-size: 0.9rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+  .vs-card ul { list-style: none; font-size: 0.85rem; color: var(--text-dim); }
+  .vs-card ul li { padding: 0.25rem 0 0.25rem 1rem; position: relative; }
+  .vs-card ul li::before { content: "→"; position: absolute; left: 0; color: var(--accent); }
+
+  /* ---- Cheat cards ---- */
+  .cheat-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 1rem; margin: 1.5rem 0;
+  }
+  .cheat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 1rem; text-align: center;
+  }
+  .cheat-card .emoji { font-size: 1.6rem; margin-bottom: 0.5rem; }
+  .cheat-card .label {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+    color: var(--accent4); font-weight: 600;
+  }
+  .cheat-card .desc { font-size: 0.78rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+  /* ---- Recap ---- */
+  .recap {
+    background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(96,165,250,0.06));
+    border: 1px dashed var(--accent); border-radius: 8px;
+    padding: 1.5rem 2rem; margin: 2rem 0;
+  }
+  .recap h3 { color: var(--accent) !important; margin-top: 0 !important; font-size: 1.1rem !important; }
+  .recap ul { list-style: none; margin-top: 0.75rem; }
+  .recap ul li {
+    padding: 0.3rem 0 0.3rem 1.5rem; font-size: 0.88rem;
+    color: var(--text-dim); position: relative;
+  }
+  .recap ul li::before { content: "✓"; position: absolute; left: 0; color: var(--accent3); font-weight: 700; }
+
+  .footer {
+    text-align: center; padding: 3rem 2rem;
+    border-top: 1px solid var(--border); color: var(--text-dim); font-size: 0.8rem;
+  }
+
+  /* ---- Step list ---- */
+  .steps { counter-reset: step; list-style: none; margin: 1rem 0; }
+  .steps li {
+    counter-increment: step; position: relative; padding: 0.6rem 0 0.6rem 2.5rem;
+    font-size: 0.92rem;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 0.55rem;
+    width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: var(--accent); color: #000; font-weight: 800;
+    font-size: 0.75rem; display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ---- Comparison inline ---- */
+  .compare-row {
+    display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.75rem;
+    align-items: center; margin: 1rem 0;
+  }
+  .compare-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 1rem; font-size: 0.88rem;
+  }
+  .compare-vs {
+    font-family: 'Caveat', cursive; font-size: 1.5rem; color: var(--red); font-weight: 700;
+  }
+
+  @media (max-width: 640px) {
+    .vs-grid, .compare-row { grid-template-columns: 1fr; }
+    .compare-vs { text-align: center; }
+    .hero h1 { font-size: 2rem; }
+    .section h2 { font-size: 1.5rem; }
+    pre { font-size: 0.74rem; padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<div class="hero">
+  <div class="hero-badge">Notes #1 — The Foundation</div>
+  <h1>Complete Core Java Guide</h1>
+  <p>From "What even is a JVM?" to confidently writing, compiling, and running Java programs — everything a beginner needs, nothing skipped.</p>
+  <div class="session-meta">
+    <span>📅 Session 1</span>
+    <span>☕ JDK 17 LTS</span>
+    <span>🛠 VS Code</span>
+    <span>📦 Setup → Data Types</span>
+    <span>🔗 Codes on GitHub (check description)</span>
+  </div>
+</div>
+
+<!-- ═══════════════ TOC ═══════════════ -->
+<div class="toc">
+  <h2>📑 What's Inside</h2>
+  <div class="toc-grid">
+    <div class="toc-item"><span class="num">01</span>Why Java? The Big Picture</div>
+    <div class="toc-item"><span class="num">02</span>Java History & Evolution</div>
+    <div class="toc-item"><span class="num">03</span>Editor vs IDE — Know the Difference</div>
+    <div class="toc-item"><span class="num">04</span>Oracle JDK vs Open-Source JDK</div>
+    <div class="toc-item"><span class="num">05</span>Setup: JDK 17 + VS Code</div>
+    <div class="toc-item"><span class="num">06</span>PATH Environment Variable</div>
+    <div class="toc-item"><span class="num">07</span>VS Code Configuration & Extensions</div>
+    <div class="toc-item"><span class="num">08</span>JShell — The Java Playground</div>
+    <div class="toc-item"><span class="num">09</span>System.out.println — The Discovery</div>
+    <div class="toc-item"><span class="num">10</span>Why Java Files Need Structure</div>
+    <div class="toc-item"><span class="num">11</span>JVM, JRE, JDK — The Holy Trinity</div>
+    <div class="toc-item"><span class="num">12</span>How Compilation Works</div>
+    <div class="toc-item"><span class="num">13</span>Platform Independence</div>
+    <div class="toc-item"><span class="num">14</span>Your First Java Program — Hello World</div>
+    <div class="toc-item"><span class="num">15</span>Data, Processing & The Real World</div>
+    <div class="toc-item"><span class="num">16</span>Variables — Storing Data</div>
+    <div class="toc-item"><span class="num">17</span>Primitive Data Types (All 8)</div>
+    <div class="toc-item"><span class="num">18</span>Literals & Type Suffixes</div>
+    <div class="toc-item"><span class="num">19</span>Common Errors & Gotchas</div>
+    <div class="toc-item"><span class="num">20</span>Grand Recap & Checklist</div>
+  </div>
+</div>
+
+<!-- ═══════════════ CONTENT ═══════════════ -->
+<div class="content">
+
+<!-- ══════ 01 ══════ -->
+<div class="section" id="s1">
+  <div class="section-label">Section 01</div>
+  <h2>Why Java? The Big Picture 🌍</h2>
+
+  <p>If you look at any programming language index (like TIOBE), Java is always in the <strong>top 5</strong> — sometimes #1, sometimes #4, but it never drops off the list. Here's <em>why</em> Java has that staying power:</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <div class="emoji">🏢</div>
+      <div class="label">Enterprise King</div>
+      <div class="desc">Banks, insurance, governments — Java runs their backends.</div>
+    </div>
+    <div class="cheat-card">
+      <div class="emoji">🌐</div>
+      <div class="label">Web Development</div>
+      <div class="desc">Spring Boot, Jakarta EE — massive web ecosystem.</div>
+    </div>
+    <div class="cheat-card">
+      <div class="emoji">📖</div>
+      <div class="label">Readable</div>
+      <div class="desc">Verbose, yes. But you can read someone else's code line by line.</div>
+    </div>
+    <div class="cheat-card">
+      <div class="emoji">🔧</div>
+      <div class="label">Maintainable</div>
+      <div class="desc">Easy to maintain large codebases — that's why enterprises love it.</div>
+    </div>
+    <div class="cheat-card">
+      <div class="emoji">🔄</div>
+      <div class="label">WORA</div>
+      <div class="desc">Write Once, Run Anywhere — thanks to the JVM.</div>
+    </div>
+    <div class="cheat-card">
+      <div class="emoji">🧵</div>
+      <div class="label">Multi-threaded</div>
+      <div class="desc">Built-in support for concurrent execution.</div>
+    </div>
+    <div class="cheat-card">
+      <div class="emoji">📚</div>
+      <div class="label">Collections API</div>
+      <div class="desc">Rich built-in data structures for every need.</div>
+    </div>
+    <div class="cheat-card">
+      <div class="emoji">🛡️</div>
+      <div class="label">Exception Handling</div>
+      <div class="desc">Robust error management baked into the language.</div>
+    </div>
+  </div>
+
+  <div class="callout brain">
+    <div class="title">Interview Cheat Code</div>
+    <div class="body">Even if you work in Python, C#, JavaScript, or any other language — interviewers <strong>will</strong> ask Java questions. The industry logic: <em>"If you know Java, you know OOP, and you can learn any other language easily."</em> Java concepts are the universal language of software interviews.</div>
+  </div>
+
+  <h3>The JVM Ecosystem — It's Bigger Than Java</h3>
+  <p>The JVM (Java Virtual Machine) doesn't just run Java. Languages like <strong>Kotlin</strong>, <strong>Scala</strong>, <strong>Groovy</strong>, and <strong>Clojure</strong> all run on the JVM. So when you learn Java, you're actually learning the foundation for an entire family of languages. If tomorrow you switch to Kotlin (used for Android), Scala (used for big data), or any JVM language — the transition will feel natural.</p>
+
+  <h3>Is Java Difficult?</h3>
+  <p>Honest answer: <strong>yes, to start with</strong>. If you're coming from Python or JavaScript, you'll notice that printing "Hello World" takes 1 line in Python but about 5 lines in Java. That initial boilerplate feels heavy. But here's the thing — once your application grows to thousands of lines, Java's structure actually <em>reduces</em> the total complexity. The number of lines becomes roughly the same across languages for large projects. Java pays you back later for the effort you put in upfront.</p>
+
+  <div class="callout coffee">
+    <div class="title">Java = Hard Start, Easy Ride Later</div>
+    <div class="body">Think of it like learning to drive a manual car vs automatic. Manual is harder at first, but once you learn it, you can drive <em>anything</em>. Java is the manual car of programming.</div>
+  </div>
+</div>
+
+<!-- ══════ 02 ══════ -->
+<div class="section" id="s2">
+  <div class="section-label">Section 02</div>
+  <h2>Java History & Evolution 📜</h2>
+
+  <p>A quick walk through Java's timeline — useful for interviews and general knowledge:</p>
+
+  <div class="diagram">
+    <div class="diagram-title">▸ Java Timeline</div>
+    <svg class="arch-svg" viewBox="0 0 700 130" xmlns="http://www.w3.org/2000/svg">
+      <!-- Timeline line -->
+      <line x1="40" y1="60" x2="660" y2="60" stroke="#333" stroke-width="2"/>
+
+      <!-- 1995 -->
+      <circle cx="80" cy="60" r="8" fill="#f59e0b"/>
+      <text x="55" y="40" fill="#f59e0b" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">1995</text>
+      <text x="38" y="90" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="9">Java born at</text>
+      <text x="33" y="104" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="9">Sun Microsystems</text>
+      <text x="33" y="118" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="9">(James Gosling)</text>
+
+      <!-- 2010 -->
+      <circle cx="260" cy="60" r="8" fill="#60a5fa"/>
+      <text x="238" y="40" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">2010</text>
+      <text x="220" y="90" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="9">Oracle acquires Sun</text>
+      <text x="218" y="104" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="9">Java trademark → Oracle</text>
+
+      <!-- 2017 -->
+      <circle cx="420" cy="60" r="8" fill="#34d399"/>
+      <text x="398" y="40" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">2017+</text>
+      <text x="380" y="90" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="9">6-month release cycle</text>
+      <text x="380" y="104" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="9">begins (Java 9+)</text>
+
+      <!-- Now -->
+      <circle cx="590" cy="60" r="8" fill="#a78bfa"/>
+      <text x="560" y="40" fill="#a78bfa" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">Today</text>
+      <text x="543" y="90" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="9">New version every 6 mo</text>
+      <text x="543" y="104" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="9">Java 17, 21 = LTS</text>
+      <text x="543" y="118" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="9">Free & open again</text>
+    </svg>
+  </div>
+
+  <div class="callout tip">
+    <div class="title">Backward Compatibility — Don't Panic!</div>
+    <div class="body">Even if you're reading these notes 5 years later when Java 30 exists — <strong>the basics won't change</strong>. Java is backward compatible. Each new version adds minor features, but the core language (classes, methods, data types, OOP) stays the same. So learn it confidently. You're future-proof.</div>
+  </div>
+</div>
+
+<!-- ══════ 03 ══════ -->
+<div class="section" id="s3">
+  <div class="section-label">Section 03</div>
+  <h2>Editor vs IDE — Know the Difference 📝</h2>
+
+  <p>Before you write a single line of Java, understand the difference between where you <em>could</em> write code:</p>
+
+  <div class="vs-grid">
+    <div class="vs-card">
+      <h4 style="color: var(--accent);">📝 Text Editor</h4>
+      <ul>
+        <li>Can only <strong>type</strong> code</li>
+        <li>No compile / run / debug built in</li>
+        <li>Examples: Notepad, Notepad++, EditPlus</li>
+        <li>Lightweight & minimal</li>
+        <li>Good for learning how things work under the hood</li>
+      </ul>
+    </div>
+    <div class="vs-card">
+      <h4 style="color: var(--accent5);">🧰 IDE (Integrated Development Environment)</h4>
+      <ul>
+        <li>Type + Compile + Run + Debug — <strong>all in one</strong></li>
+        <li>Auto-complete, error highlighting, refactoring</li>
+        <li>Examples: Eclipse, IntelliJ IDEA, NetBeans</li>
+        <li>Heavier on resources</li>
+        <li>Essential for real-world projects</li>
+      </ul>
+    </div>
+  </div>
+
+  <p><strong>VS Code</strong> sits in between — it's technically an editor, but with extensions it behaves like a lightweight IDE. That's why it's perfect for learning.</p>
+
+  <h3>IDE Options for Java</h3>
+
+  <table class="ext-table">
+    <thead>
+      <tr><th>IDE</th><th>Notes</th><th>Cost</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="color: var(--accent4); font-weight:600;">VS Code</td><td>Lightweight, extensible, our pick for this course</td><td>Free</td></tr>
+      <tr><td style="color: var(--accent4); font-weight:600;">IntelliJ IDEA</td><td>Best Java IDE overall. Community Edition is limited; Ultimate is amazing.</td><td>Community = Free, Ultimate = Paid</td></tr>
+      <tr><td style="color: var(--accent4); font-weight:600;">Eclipse</td><td>Old-school workhorse. Popular in enterprise shops.</td><td>Free</td></tr>
+      <tr><td style="color: var(--accent4); font-weight:600;">NetBeans</td><td>Beginner-friendly, full-featured, less popular now.</td><td>Free</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout brain">
+    <div class="title">Pro Tip</div>
+    <div class="body">Don't get attached to one IDE early. In your career you'll likely use multiple — Eclipse at one company, IntelliJ at another. Get comfortable switching. This course starts with VS Code but will touch other IDEs later.</div>
+  </div>
+</div>
+
+<!-- ══════ 04 ══════ -->
+<div class="section" id="s4">
+  <div class="section-label">Section 04</div>
+  <h2>Oracle JDK vs Open-Source JDK ☕</h2>
+
+  <p>When you download the JDK, you'll notice there are <strong>two flavors</strong>:</p>
+
+  <div class="vs-grid">
+    <div class="vs-card">
+      <h4 style="color: var(--accent);">🏛 Oracle JDK</h4>
+      <ul>
+        <li>Official JDK from Oracle</li>
+        <li>Was paid for commercial use (2018–2021)</li>
+        <li><strong>Now free again!</strong></li>
+        <li>We're using this in the course</li>
+      </ul>
+    </div>
+    <div class="vs-card">
+      <h4 style="color: var(--accent3);">🌿 Open-Source JDK (OpenJDK)</h4>
+      <ul>
+        <li>Multiple implementations exist</li>
+        <li>Amazon Corretto, Adoptium (Eclipse Temurin), Azul Zulu, etc.</li>
+        <li>All are free & production-ready</li>
+        <li>Choose any — they all work the same way</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <div class="title">Which One to Pick?</div>
+    <div class="body">For learning, it doesn't matter — both behave identically. Oracle JDK is the simplest to download (just Google "JDK download"). For production at a company, check with your team — many use Amazon Corretto or Adoptium to avoid any licensing confusion.</div>
+  </div>
+</div>
+
+<!-- ══════ 05 ══════ -->
+<div class="section" id="s5">
+  <div class="section-label">Section 05</div>
+  <h2>Setup: Installing JDK 17 + VS Code 🔧</h2>
+
+  <h3>Step 1 — Download & Install JDK 17 (LTS)</h3>
+  <p>Go to the Oracle JDK downloads page (search "JDK download"). Pick <strong>JDK 17</strong>.</p>
+
+  <div class="callout warn">
+    <div class="title">Why JDK 17 and Not the Latest?</div>
+    <div class="body">Java releases a new version every <strong>6 months</strong> — Java 19, 20, 21, 22… But NOT every version gets <strong>Long Term Support (LTS)</strong>. Non-LTS versions only get updates for 6 months. LTS versions get years of support.<br><br>
+    <strong>LTS versions:</strong> Java 8, 11, 17, 21…<br>
+    <strong>Rule:</strong> For learning & production → always pick LTS.</div>
+  </div>
+
+  <p>Select your OS (Windows / Mac / Linux), download the installer, and run it. The installer is straightforward — just click Next → Next → Finish.</p>
+
+  <h3>Step 2 — Download & Install VS Code</h3>
+  <p>Search "VS Code download," grab the installer, accept the license, click Next through everything. Nothing special to configure during installation.</p>
+
+  <h3>Step 3 — Verify Both Installations</h3>
+  <p>Open a terminal (Command Prompt on Windows, Terminal on Mac/Linux) and run:</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">terminal</span><span>verify JDK installation</span></div>
+    <pre><span class="cmt"># Check the Java runtime version</span>
+<span class="fn">java</span> --version
+<span class="cmt"># Expected: java 17.x.x ...</span>
+
+<span class="cmt"># Check the Java COMPILER version</span>
+<span class="fn">javac</span> --version
+<span class="cmt"># Expected: javac 17.x.x</span>
+<span class="cmt"># javac = Java Compiler — you need this to compile code</span>
+<span class="cmt"># java  = Java Runtime  — you need this to RUN compiled code</span></pre>
+  </div>
+
+  <p>If <code>java --version</code> works but <code>javac --version</code> gives "command not found" — don't panic. You just need to set the PATH. Read on.</p>
+</div>
+
+<!-- ══════ 06 ══════ -->
+<div class="section" id="s6">
+  <div class="section-label">Section 06</div>
+  <h2>Setting the PATH Environment Variable 🗺️</h2>
+
+  <p>Your operating system doesn't magically know where <code>javac</code> lives on your hard drive. The <strong>PATH</strong> variable is a list of folders your terminal searches when you type any command. If JDK's <code>bin</code> folder isn't in that list, the terminal says "command not found."</p>
+
+  <h3>Windows Setup</h3>
+  <ol class="steps">
+    <li>Open Start and search for <strong>"Environment Variables"</strong></li>
+    <li>Click <strong>"Edit the system environment variables"</strong></li>
+    <li>Click the <strong>"Environment Variables"</strong> button</li>
+    <li>Under <strong>System Variables</strong>, find <strong>Path</strong> and double-click it</li>
+    <li>Click <strong>New</strong> and paste the path to your JDK's bin folder</li>
+    <li>Click OK → OK → OK to save everything</li>
+    <li><strong>Restart your terminal</strong> (old terminals won't pick up the change)</li>
+  </ol>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">path</span><span>typical JDK bin location on Windows</span></div>
+    <pre>C:\Program Files\Java\jdk-17\bin</pre>
+  </div>
+
+  <div class="callout tip">
+    <div class="title">How to Find Your JDK Path</div>
+    <div class="body">Navigate to <code>C:\Program Files\Java\</code> → open the <code>jdk-17</code> folder → open <code>bin</code>. You'll see <code>javac.exe</code> inside. Copy the full path of this <code>bin</code> folder — that's what goes into your PATH variable.</div>
+  </div>
+
+  <div class="callout warn">
+    <div class="title">User Variables vs System Variables</div>
+    <div class="body"><strong>User Variables</strong> apply only to your user account. <strong>System Variables</strong> apply to all users on the machine. For development, System Variables are the safer bet so Java is available regardless of which account you log in with.</div>
+  </div>
+</div>
+
+<!-- ══════ 07 ══════ -->
+<div class="section" id="s7">
+  <div class="section-label">Section 07</div>
+  <h2>VS Code Configuration & Extensions 🎨</h2>
+
+  <h3>Theme</h3>
+  <p>When you first open VS Code, it asks you to pick a color theme. Go with <strong>Dark</strong> — it's easier on the eyes during long coding sessions.</p>
+
+  <h3>The Welcome Tab & Get Started</h3>
+  <p>You'll see a "Welcome" tab and a "Get Started" page. You can close both — and uncheck "Show welcome page on startup" if you don't want to see it every time.</p>
+
+  <h3>Extension Pack for Java</h3>
+  <p>When you create a <code>.java</code> file, VS Code will suggest installing the <strong>"Extension Pack for Java"</strong>. This is optional but helpful — it adds:</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <div class="emoji">🎯</div>
+      <div class="label">Auto-complete</div>
+      <div class="desc">Suggests method names as you type.</div>
+    </div>
+    <div class="cheat-card">
+      <div class="emoji">🐛</div>
+      <div class="label">Debugging</div>
+      <div class="desc">Set breakpoints and step through code.</div>
+    </div>
+    <div class="cheat-card">
+      <div class="emoji">▶️</div>
+      <div class="label">Run Button</div>
+      <div class="desc">One-click to compile + run.</div>
+    </div>
+    <div class="cheat-card">
+      <div class="emoji">🔍</div>
+      <div class="label">Error Highlights</div>
+      <div class="desc">Red squiggles before you even compile.</div>
+    </div>
+  </div>
+
+  <div class="callout coffee">
+    <div class="title">No Extensions? No Problem.</div>
+    <div class="body">You can 100% write, compile, and run Java without any extensions — just using the built-in terminal and <code>javac</code> / <code>java</code> commands. Extensions are convenience, not a requirement. For learning the fundamentals, doing it manually is actually better — you'll understand the process deeply.</div>
+  </div>
+
+  <h3>Using VS Code's Built-in Terminal</h3>
+  <p>VS Code has a built-in terminal so you don't need to open an external Command Prompt. Go to <strong>Terminal → New Terminal</strong> (or use the menu bar). You can run <code>java --version</code> and <code>javac --version</code> right here to verify your setup.</p>
+
+  <h3>Creating a Project Folder</h3>
+  <p>Click <strong>File → Open Folder</strong> → create a new folder on your Desktop (e.g., name it <code>javacode</code>) → Open it. This folder is your workspace — all Java files will live here.</p>
+
+  <h3>File Extensions — Every Language Has One</h3>
+  <table class="ext-table">
+    <thead><tr><th>Language</th><th>Extension</th></tr></thead>
+    <tbody>
+      <tr><td>Java</td><td><code>.java</code></td></tr>
+      <tr><td>C</td><td><code>.c</code></td></tr>
+      <tr><td>C++</td><td><code>.cpp</code></td></tr>
+      <tr><td>JavaScript</td><td><code>.js</code></td></tr>
+      <tr><td>Python</td><td><code>.py</code></td></tr>
+    </tbody>
+  </table>
+  <p>When creating a Java file, <strong>always</strong> end it with <code>.java</code> — e.g., <code>Hello.java</code>.</p>
+</div>
+
+<!-- ══════ 08 ══════ -->
+<div class="section" id="s8">
+  <div class="section-label">Section 08</div>
+  <h2>JShell — The Java Playground 🎮</h2>
+
+  <p><strong>JShell</strong> was introduced in <strong>Java 9</strong>. It's a REPL (Read-Eval-Print-Loop) — a scratch pad where you can type Java expressions and see results instantly. No class needed, no <code>main</code> method, no boilerplate. Just type and go.</p>
+
+  <h3>Launching JShell</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="lang">terminal</span><span>starting JShell</span></div>
+    <pre><span class="cmt"># Type jshell in your terminal</span>
+$ <span class="fn">jshell</span>
+|  Welcome to JShell
+|  For an introduction type: /help intro
+
+jshell> _</pre>
+  </div>
+
+  <h3>What Can You Do in JShell?</h3>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">jshell</span><span>quick math</span></div>
+    <pre><span class="cmt">// Simple arithmetic — just type and hit Enter!</span>
+jshell> <span class="num">2</span> + <span class="num">3</span>
+$1 ==> <span class="num">5</span>
+
+jshell> <span class="num">9</span> - <span class="num">6</span>
+$2 ==> <span class="num">3</span></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">jshell</span><span>printing values</span></div>
+    <pre><span class="cmt">// Printing a number</span>
+jshell> System.out.println(<span class="num">6</span>);
+<span class="num">6</span>
+
+<span class="cmt">// Printing text — text goes in DOUBLE QUOTES</span>
+jshell> System.out.println(<span class="str">"Hello World"</span>);
+Hello World
+
+<span class="cmt">// Exit JShell</span>
+jshell> /exit</pre>
+  </div>
+
+  <div class="callout brain">
+    <div class="title">JShell = Calculator, Not Workshop</div>
+    <div class="body">JShell is great for experimenting — trying out a formula, testing a method, verifying syntax. But you <strong>cannot</strong> build real applications in JShell. For that, you need <code>.java</code> files with proper class structure. Think of JShell as your playground and <code>.java</code> files as your construction site.</div>
+  </div>
+</div>
+
+<!-- ══════ 09 ══════ -->
+<div class="section" id="s9">
+  <div class="section-label">Section 09</div>
+  <h2>The System.out.println Discovery 🔍</h2>
+
+  <p>This is important because it shows you how Java thinks. Let's walk through the discovery process just like in the session:</p>
+
+  <h3>Attempt 1 — Just calling <code>print()</code></h3>
+  <div class="code-block">
+    <div class="code-header"><span class="lang">jshell</span><span>❌ this fails!</span></div>
+    <pre>jshell> print(<span class="str">"Hello World"</span>);
+<span style="color:#f87171;">|  Error: cannot find symbol
+|    symbol: method print(String)</span></pre>
+  </div>
+  <p>Java doesn't have a standalone <code>print()</code> function like Python. In Java, <code>print</code> belongs to something — it's part of a system.</p>
+
+  <h3>Attempt 2 — The Correct Way</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="lang">jshell</span><span>✅ this works!</span></div>
+    <pre>jshell> System.out.println(<span class="str">"Hello World"</span>);
+Hello World</pre>
+  </div>
+
+  <h3>Breaking Down <code>System.out.println</code></h3>
+  <div class="diagram">
+    <div class="diagram-title">▸ What Each Part Means</div>
+    <svg class="arch-svg" viewBox="0 0 700 150" xmlns="http://www.w3.org/2000/svg">
+      <text x="40" y="40" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="22" font-weight="700">System</text>
+      <text x="155" y="40" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="22">.</text>
+      <text x="170" y="40" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="22" font-weight="700">out</text>
+      <text x="220" y="40" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="22">.</text>
+      <text x="235" y="40" fill="#fbbf24" font-family="JetBrains Mono, monospace" font-size="22" font-weight="700">println</text>
+      <text x="350" y="40" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="22">(</text>
+      <text x="365" y="40" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="22">"Hello"</text>
+      <text x="455" y="40" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="22">)</text>
+      <text x="470" y="40" fill="#f87171" font-family="JetBrains Mono, monospace" font-size="22" font-weight="700">;</text>
+
+      <!-- Annotations -->
+      <line x1="80" y1="52" x2="80" y2="72" stroke="#60a5fa" stroke-width="1"/>
+      <text x="30" y="90" fill="#60a5fa" font-family="Bricolage Grotesque, sans-serif" font-size="11">A built-in class</text>
+      <text x="25" y="104" fill="#60a5fa" font-family="Bricolage Grotesque, sans-serif" font-size="11">that provides system</text>
+      <text x="35" y="118" fill="#60a5fa" font-family="Bricolage Grotesque, sans-serif" font-size="11">level operations</text>
+
+      <line x1="190" y1="52" x2="190" y2="72" stroke="#34d399" stroke-width="1"/>
+      <text x="160" y="90" fill="#34d399" font-family="Bricolage Grotesque, sans-serif" font-size="11">The output</text>
+      <text x="165" y="104" fill="#34d399" font-family="Bricolage Grotesque, sans-serif" font-size="11">stream</text>
+      <text x="155" y="118" fill="#34d399" font-family="Bricolage Grotesque, sans-serif" font-size="11">(your console)</text>
+
+      <line x1="275" y1="52" x2="275" y2="72" stroke="#fbbf24" stroke-width="1"/>
+      <text x="255" y="90" fill="#fbbf24" font-family="Bricolage Grotesque, sans-serif" font-size="11">The method</text>
+      <text x="242" y="104" fill="#fbbf24" font-family="Bricolage Grotesque, sans-serif" font-size="11">(print + new line)</text>
+
+      <line x1="400" y1="52" x2="400" y2="72" stroke="#34d399" stroke-width="1"/>
+      <text x="370" y="90" fill="#e5e5e5" font-family="Bricolage Grotesque, sans-serif" font-size="11">What to print</text>
+      <text x="360" y="104" fill="#e5e5e5" font-family="Bricolage Grotesque, sans-serif" font-size="11">(goes in brackets)</text>
+
+      <line x1="475" y1="52" x2="475" y2="72" stroke="#f87171" stroke-width="1"/>
+      <text x="460" y="90" fill="#f87171" font-family="Bricolage Grotesque, sans-serif" font-size="11">Statement</text>
+      <text x="465" y="104" fill="#f87171" font-family="Bricolage Grotesque, sans-serif" font-size="11">terminator</text>
+    </svg>
+  </div>
+
+  <h3><code>print</code> vs <code>println</code></h3>
+  <div class="compare-row">
+    <div class="compare-box">
+      <p style="margin:0;"><code style="color:var(--accent4);">System.out.print("A");</code></p>
+      <p style="margin:0.3rem 0 0;color:var(--text-dim);font-size:0.85rem;">Prints <strong>without</strong> adding a new line after it. The next print continues on the same line.</p>
+    </div>
+    <div class="compare-vs">vs</div>
+    <div class="compare-box">
+      <p style="margin:0;"><code style="color:var(--accent3);">System.out.println("A");</code></p>
+      <p style="margin:0.3rem 0 0;color:var(--text-dim);font-size:0.85rem;">Prints <strong>and moves to a new line</strong>. The "ln" stands for "line." The next print starts on a fresh line.</p>
+    </div>
+  </div>
+
+  <h3>Numbers vs Text</h3>
+  <div class="callout tip">
+    <div class="title">Quotes Rule</div>
+    <div class="body">
+      <strong>Numbers</strong> can be used directly: <code>System.out.println(6);</code><br>
+      <strong>Text (Strings)</strong> must be wrapped in <strong>double quotes</strong>: <code>System.out.println("Hello");</code><br><br>
+      If you forget the double quotes around text, Java thinks you're referring to a variable name, not actual text — and will throw an error.
+    </div>
+  </div>
+
+  <h3>The Semicolon Rule</h3>
+  <p>Every statement in Java <strong>must</strong> end with a <strong>semicolon</strong> (<code>;</code>). It tells Java "this statement is finished." Forget it and you get a compile error. No exceptions. Think of it like a full stop at the end of a sentence.</p>
+</div>
+
+<!-- ══════ 10 ══════ -->
+<div class="section" id="s10">
+  <div class="section-label">Section 10</div>
+  <h2>Why Java Files Need Structure 🧱</h2>
+
+  <p>Here's what confuses beginners: <code>System.out.println("Hello");</code> works perfectly in JShell, but if you put just that one line in a <code>Hello.java</code> file and try to compile it — it <strong>fails</strong>.</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">Hello.java</span><span>❌ this won't compile!</span></div>
+    <pre>System.out.println(<span class="str">"Hello World"</span>);</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">terminal</span><span>compilation error</span></div>
+    <pre>$ javac Hello.java
+<span style="color:#f87171;">error: class, interface, enum, or record expected</span></pre>
+  </div>
+
+  <p>Java says: <em>"Where's your class? Where's your main method? I need structure!"</em></p>
+
+  <p>This is because Java is an <strong>Object-Oriented Language</strong>. Everything must live inside a <strong>class</strong>. And the JVM needs a specific entry point to start execution — the <strong>main method</strong>. JShell hides this from you for convenience, but real Java files enforce it.</p>
+
+  <h3>What Java Requires in Every Runnable File</h3>
+  <ol class="steps">
+    <li>A <strong>class</strong> — because Java is object-oriented, all code lives inside classes</li>
+    <li>A <strong>main method</strong> with the exact signature <code>public static void main(String[] args)</code> — this is where JVM starts execution</li>
+    <li>Your code (like <code>System.out.println</code>) goes <strong>inside</strong> the main method</li>
+    <li>Every statement ends with a <strong>semicolon</strong></li>
+  </ol>
+
+  <div class="callout brain">
+    <div class="title">Even With 1000 Files…</div>
+    <div class="body">Your project can have 10, 100, or 1000 <code>.java</code> files. But the JVM will always need <strong>one entry point</strong> — the first file you specify when running. That file must have the <code>main</code> method. JVM starts there and then follows the code to other files as needed.</div>
+  </div>
+</div>
+
+<!-- ══════ 11 ══════ -->
+<div class="section" id="s11">
+  <div class="section-label">Section 11</div>
+  <h2>JVM, JRE, JDK — The Holy Trinity ⚙️</h2>
+
+  <p>These three acronyms are the most frequently asked concept in Java interviews. Think of them as nesting dolls — one lives inside the other:</p>
+
+  <div class="diagram">
+    <div class="diagram-title">▸ JDK ⊃ JRE ⊃ JVM — Nested Architecture</div>
+    <svg class="arch-svg" viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg">
+      <!-- JDK outer box -->
+      <rect x="20" y="20" width="660" height="300" rx="12" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 3"/>
+      <text x="46" y="50" fill="#f59e0b" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">JDK  (Java Development Kit)</text>
+      <text x="46" y="70" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">For DEVELOPERS — includes compiler (javac), debugger (jdb), jar tool</text>
+      <text x="46" y="85" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">When you install JDK, you get JRE + JVM bundled automatically.</text>
+
+      <!-- JRE box -->
+      <rect x="50" y="100" width="610" height="200" rx="10" fill="none" stroke="#60a5fa" stroke-width="2" stroke-dasharray="6 3"/>
+      <text x="74" y="124" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">JRE  (Java Runtime Environment)</text>
+      <text x="74" y="142" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">For RUNNING Java apps — every machine that runs Java needs JRE</text>
+      <text x="74" y="157" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">End-users only need JRE (they don't compile code)</text>
+
+      <!-- JVM box -->
+      <rect x="80" y="170" width="260" height="110" rx="8" fill="rgba(52,211,153,0.08)" stroke="#34d399" stroke-width="2"/>
+      <text x="106" y="196" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">JVM (Java Virtual Machine)</text>
+      <text x="106" y="216" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">The actual ENGINE that</text>
+      <text x="106" y="232" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">executes bytecode</text>
+      <text x="106" y="252" fill="#f87171" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600">Platform DEPENDENT ⚠️</text>
+      <text x="106" y="268" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">↳ different JVM per OS</text>
+
+      <!-- Libraries box -->
+      <rect x="370" y="170" width="270" height="110" rx="8" fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="2"/>
+      <text x="396" y="196" fill="#a78bfa" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">Class Libraries</text>
+      <text x="396" y="218" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">java.lang (String, Math, System)</text>
+      <text x="396" y="236" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">java.util (Collections, Arrays)</text>
+      <text x="396" y="254" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">java.io, java.net, java.sql…</text>
+      <text x="396" y="270" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">Thousands of ready-to-use classes</text>
+    </svg>
+  </div>
+
+  <div class="callout tip">
+    <div class="title">Summary in One Sentence Each</div>
+    <div class="body">
+      <strong>JVM</strong> = The engine that actually runs bytecode. It's platform dependent (different build per OS).<br>
+      <strong>JRE</strong> = JVM + Class Libraries. What end-users install to run Java apps.<br>
+      <strong>JDK</strong> = JRE + Development tools (javac, jdb, jar). What developers install.<br><br>
+      <strong>Not every machine has javac.</strong> JavaC (the compiler) is only for developers. Regular users who just run Java apps only need JRE.
+    </div>
+  </div>
+
+  <h3>Where Does It All Sit?</h3>
+  <div class="diagram">
+    <div class="diagram-title">▸ The Full Stack: Hardware → OS → JRE → JVM → Your Code</div>
+    <svg class="arch-svg" viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+      <rect x="50" y="200" width="400" height="44" rx="6" fill="rgba(96,165,250,0.08)" stroke="#444" stroke-width="1.5"/>
+      <text x="210" y="228" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle">Hardware (Laptop/Phone/Server)</text>
+
+      <rect x="80" y="150" width="340" height="44" rx="6" fill="rgba(245,158,11,0.08)" stroke="#444" stroke-width="1.5"/>
+      <text x="210" y="178" fill="#f59e0b" font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle">Operating System (Windows/Mac/Linux)</text>
+
+      <rect x="110" y="100" width="280" height="44" rx="6" fill="rgba(96,165,250,0.08)" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="210" y="128" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle">JRE (JVM + Libraries)</text>
+
+      <rect x="140" y="50" width="220" height="44" rx="6" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="2"/>
+      <text x="210" y="78" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle" font-weight="700">Your Java Application</text>
+
+      <text x="210" y="22" fill="#a78bfa" font-family="Caveat, cursive" font-size="16" text-anchor="middle">Your code sits on top of everything!</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ══════ 12 ══════ -->
+<div class="section" id="s12">
+  <div class="section-label">Section 12</div>
+  <h2>How Compilation Works 🔄</h2>
+
+  <p>Java is a <strong>two-step</strong> language. You don't just "run" code — you first <strong>compile</strong> it, then <strong>run</strong> the compiled output. Here's why and how:</p>
+
+  <h3>The Problem</h3>
+  <p>You write code in English-like syntax (<code>System.out.println</code>). But the JVM doesn't understand English — it only understands <strong>bytecode</strong> (a machine-optimized binary format). So you need something to translate. That translator is the <strong>compiler (javac)</strong>.</p>
+
+  <div class="diagram">
+    <div class="diagram-title">▸ From Source Code to Execution — The Complete Flow</div>
+    <svg class="arch-svg" viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="a1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#f59e0b"/></marker>
+        <marker id="a2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#34d399"/></marker>
+        <marker id="a3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#60a5fa"/></marker>
+      </defs>
+
+      <!-- You the programmer -->
+      <rect x="10" y="55" width="100" height="80" rx="8" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" stroke-width="2"/>
+      <text x="35" y="82" fill="#a78bfa" font-family="JetBrains Mono, monospace" font-size="14">👤 You</text>
+      <text x="22" y="104" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">write code in</text>
+      <text x="24" y="118" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">Hello.java</text>
+
+      <!-- Arrow -->
+      <line x1="115" y1="95" x2="160" y2="95" stroke="#f59e0b" stroke-width="2" marker-end="url(#a1)"/>
+
+      <!-- javac -->
+      <rect x="165" y="55" width="130" height="80" rx="8" fill="rgba(245,158,11,0.1)" stroke="#f59e0b" stroke-width="2"/>
+      <text x="190" y="82" fill="#f59e0b" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">javac</text>
+      <text x="185" y="102" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">Java Compiler</text>
+      <text x="185" y="118" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">.java → .class</text>
+
+      <!-- Arrow -->
+      <line x1="300" y1="95" x2="345" y2="95" stroke="#34d399" stroke-width="2" marker-end="url(#a2)"/>
+
+      <!-- Bytecode -->
+      <rect x="350" y="55" width="130" height="80" rx="8" fill="rgba(52,211,153,0.08)" stroke="#34d399" stroke-width="2"/>
+      <text x="367" y="82" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">Hello.class</text>
+      <text x="377" y="102" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">Bytecode</text>
+      <text x="370" y="118" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">(not readable</text>
+      <text x="372" y="130" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">by humans)</text>
+
+      <!-- Arrow -->
+      <line x1="485" y1="95" x2="530" y2="95" stroke="#60a5fa" stroke-width="2" marker-end="url(#a3)"/>
+
+      <!-- JVM -->
+      <rect x="535" y="55" width="110" height="80" rx="8" fill="rgba(96,165,250,0.1)" stroke="#60a5fa" stroke-width="2"/>
+      <text x="570" y="82" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700">JVM</text>
+      <text x="553" y="102" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">Executes</text>
+      <text x="553" y="118" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">bytecode on</text>
+      <text x="560" y="130" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">your OS/HW</text>
+
+      <!-- Output -->
+      <line x1="650" y1="95" x2="690" y2="95" stroke="#a78bfa" stroke-width="2" marker-end="url(#a3)"/>
+      <text x="660" y="80" fill="#a78bfa" font-family="JetBrains Mono, monospace" font-size="10" transform="rotate(90 680 80)">OUTPUT</text>
+
+      <!-- labels below -->
+      <text x="175" y="160" fill="#f59e0b" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600">javac Hello.java</text>
+      <text x="175" y="176" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="10">(compile — uses file name with .java)</text>
+
+      <text x="535" y="160" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600">java Hello</text>
+      <text x="535" y="176" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="10">(run — class name, NO .java)</text>
+    </svg>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">terminal</span><span>the two commands you'll use daily</span></div>
+    <pre><span class="cmt"># Step 1: Compile (produces Hello.class)</span>
+<span class="fn">javac</span> Hello.java
+
+<span class="cmt"># Step 2: Run (JVM looks for main() inside Hello class)</span>
+<span class="fn">java</span> Hello
+
+<span class="cmt"># Output:</span>
+Hello World</pre>
+  </div>
+
+  <div class="callout warn">
+    <div class="title">Critical Difference!</div>
+    <div class="body">
+      <code>javac Hello<strong>.java</strong></code> — compile uses the <strong>file name</strong> (with extension).<br>
+      <code>java Hello</code> — run uses the <strong>class name</strong> (NO extension).<br><br>
+      Also: make sure your terminal is in the <strong>same folder</strong> as your <code>.java</code> file. If you're in a different directory, javac won't find the file.
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 13 ══════ -->
+<div class="section" id="s13">
+  <div class="section-label">Section 13</div>
+  <h2>Platform Independence 🌐</h2>
+
+  <p>Java's headline feature: <strong>"Write Once, Run Anywhere" (WORA)</strong>. But let's be precise about what that really means — and what the catch is:</p>
+
+  <div class="diagram">
+    <div class="diagram-title">▸ Same Bytecode, Different JVMs</div>
+    <svg class="arch-svg" viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg">
+      <!-- Your bytecode -->
+      <rect x="240" y="10" width="220" height="50" rx="6" fill="rgba(167,139,250,0.12)" stroke="#a78bfa" stroke-width="2"/>
+      <text x="280" y="40" fill="#a78bfa" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">Your Hello.class</text>
+      <text x="260" y="76" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="11">Same file runs on all platforms ↓</text>
+
+      <!-- Three platforms -->
+      <rect x="20" y="100" width="200" height="110" rx="8" fill="rgba(96,165,250,0.06)" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="65" y="125" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">🪟 Windows</text>
+      <rect x="42" y="140" width="156" height="28" rx="4" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="1"/>
+      <text x="62" y="159" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="10">JVM for Windows</text>
+      <rect x="42" y="174" width="156" height="24" rx="3" fill="rgba(245,158,11,0.08)" stroke="#333" stroke-width="1"/>
+      <text x="78" y="191" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">Windows OS + HW</text>
+
+      <rect x="250" y="100" width="200" height="110" rx="8" fill="rgba(96,165,250,0.06)" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="310" y="125" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">🍎 macOS</text>
+      <rect x="272" y="140" width="156" height="28" rx="4" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="1"/>
+      <text x="298" y="159" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="10">JVM for macOS</text>
+      <rect x="272" y="174" width="156" height="24" rx="3" fill="rgba(245,158,11,0.08)" stroke="#333" stroke-width="1"/>
+      <text x="314" y="191" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">macOS + HW</text>
+
+      <rect x="480" y="100" width="200" height="110" rx="8" fill="rgba(96,165,250,0.06)" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="545" y="125" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">🐧 Linux</text>
+      <rect x="502" y="140" width="156" height="28" rx="4" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="1"/>
+      <text x="528" y="159" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="10">JVM for Linux</text>
+      <rect x="502" y="174" width="156" height="24" rx="3" fill="rgba(245,158,11,0.08)" stroke="#333" stroke-width="1"/>
+      <text x="544" y="191" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">Linux + HW</text>
+
+      <!-- Key insight -->
+      <rect x="100" y="228" width="500" height="18" rx="4" fill="none" stroke="none"/>
+      <text x="120" y="244" fill="#f87171" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Your app = platform INDEPENDENT &nbsp;&nbsp;|&nbsp;&nbsp; JVM = platform DEPENDENT</text>
+    </svg>
+  </div>
+
+  <div class="callout brain">
+    <div class="title">The Catch — In Plain English</div>
+    <div class="body">
+      <strong>Your code</strong> is platform independent — the same <code>.class</code> bytecode runs on Windows, Mac, and Linux without recompiling.<br><br>
+      <strong>BUT the JVM itself</strong> is platform dependent — Oracle builds a separate JVM for each OS. The JVM is the "adapter" between your code and the operating system.<br><br>
+      So: <em>Java is platform independent <strong>as long as</strong> the target machine has a JVM installed for its OS.</em> If a machine doesn't have a JVM, your Java app can't run there.
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 14 ══════ -->
+<div class="section" id="s14">
+  <div class="section-label">Section 14</div>
+  <h2>Your First Java Program — Hello World 🚀</h2>
+
+  <p>Every programmer's rite of passage. In Java, you earn it — no one-liners here. Let's build it piece by piece:</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">Hello.java</span><span>the sacred first program</span></div>
+    <pre><span class="kw">class</span> <span class="type">Hello</span> <span class="punct">{</span>
+    <span class="kw">public static void</span> <span class="fn">main</span><span class="punct">(</span><span class="type">String</span><span class="punct">[]</span> args<span class="punct">)</span> <span class="punct">{</span>
+        System<span class="punct">.</span>out<span class="punct">.</span><span class="fn">println</span><span class="punct">(</span><span class="str">"Hello World"</span><span class="punct">);</span>
+    <span class="punct">}</span>
+<span class="punct">}</span></pre>
+  </div>
+
+  <h3>Line-by-Line Breakdown</h3>
+
+  <div class="diagram">
+    <div class="diagram-title">▸ Anatomy of Hello.java</div>
+    <svg class="arch-svg" viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
+      <!-- Code lines -->
+      <text x="30" y="40" fill="#c084fc" font-family="JetBrains Mono, monospace" font-size="13">class</text>
+      <text x="80" y="40" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">Hello</text>
+      <text x="128" y="40" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="13">{</text>
+
+      <text x="50" y="80" fill="#c084fc" font-family="JetBrains Mono, monospace" font-size="13">public static void</text>
+      <text x="255" y="80" fill="#fbbf24" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">main</text>
+      <text x="300" y="80" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="13">(String[] args) {</text>
+
+      <text x="70" y="120" fill="#e5e5e5" font-family="JetBrains Mono, monospace" font-size="13">System.out.println("Hello World");</text>
+
+      <text x="50" y="160" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="13">}</text>
+      <text x="30" y="190" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="13">}</text>
+
+      <!-- Annotation lines -->
+      <line x1="140" y1="36" x2="480" y2="36" stroke="#f59e0b" stroke-width="0.5" stroke-dasharray="3 3"/>
+      <text x="490" y="28" fill="#f59e0b" font-family="Bricolage Grotesque, sans-serif" font-size="11" font-weight="600">Java is Object-Oriented. ALL code</text>
+      <text x="490" y="44" fill="#f59e0b" font-family="Bricolage Grotesque, sans-serif" font-size="11" font-weight="600">must live inside a class.</text>
+
+      <line x1="480" y1="76" x2="510" y2="76" stroke="#34d399" stroke-width="0.5" stroke-dasharray="3 3"/>
+      <text x="520" y="68" fill="#34d399" font-family="Bricolage Grotesque, sans-serif" font-size="11" font-weight="600">JVM looks for THIS exact signature</text>
+      <text x="520" y="84" fill="#34d399" font-family="Bricolage Grotesque, sans-serif" font-size="11" font-weight="600">to know where to start running.</text>
+
+      <line x1="470" y1="116" x2="510" y2="116" stroke="#a78bfa" stroke-width="0.5" stroke-dasharray="3 3"/>
+      <text x="520" y="111" fill="#a78bfa" font-family="Bricolage Grotesque, sans-serif" font-size="11" font-weight="600">Your actual logic goes here.</text>
+      <text x="520" y="127" fill="#a78bfa" font-family="Bricolage Grotesque, sans-serif" font-size="11" font-weight="600">println = print + move to new line</text>
+
+      <!-- Keyword breakdown -->
+      <rect x="30" y="220" width="660" height="145" rx="6" fill="rgba(245,158,11,0.04)" stroke="#333" stroke-width="1"/>
+      <text x="50" y="245" fill="#e5e5e5" font-family="Bricolage Grotesque, sans-serif" font-size="13" font-weight="700">Keyword-by-Keyword:</text>
+
+      <text x="50" y="272" fill="#c084fc" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">class</text>
+      <text x="110" y="272" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="11">→ Declares a class. Java is OOP — everything goes in a class.</text>
+
+      <text x="50" y="294" fill="#c084fc" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">public</text>
+      <text x="120" y="294" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="11">→ Accessible from anywhere. JVM must be able to reach main().</text>
+
+      <text x="50" y="316" fill="#c084fc" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">static</text>
+      <text x="120" y="316" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="11">→ Can be called without creating an object. JVM calls it directly.</text>
+
+      <text x="50" y="338" fill="#c084fc" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">void</text>
+      <text x="110" y="338" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="11">→ Returns nothing.</text>
+      <text x="310" y="338" fill="#c084fc" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">main</text>
+      <text x="370" y="338" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="11">→ Entry point name (non-negotiable).</text>
+
+      <text x="50" y="356" fill="#c084fc" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">String[] args</text>
+      <text x="190" y="356" fill="#9ca3af" font-family="Bricolage Grotesque, sans-serif" font-size="11">→ Accepts command-line arguments as an array of strings.</text>
+    </svg>
+  </div>
+
+  <div class="callout warn">
+    <div class="title">Class Name = File Name (for now)</div>
+    <div class="body">At this stage, keep the class name and the file name the <strong>same</strong>. If your class is <code>Hello</code>, the file should be <code>Hello.java</code>. This isn't always strictly required, but it avoids confusion and is considered best practice.</div>
+  </div>
+
+  <h3>Curly Braces & Indentation</h3>
+  <p>Every time you open a curly brace <code>{</code>, you must close it with <code>}</code>. And everything inside gets indented — this isn't just cosmetic, it makes code <strong>readable</strong>. Code that "works but looks messy" is code that's hard to maintain. Java developers care about clean formatting.</p>
+
+  <div class="callout fun">
+    <div class="title">You Did It! 🎉</div>
+    <div class="body">If you've written, compiled, and run Hello World — give yourself a pat on the back. Seriously. You just:<br>
+    ✅ Wrote a class<br>
+    ✅ Defined a main method with the correct signature<br>
+    ✅ Used System.out.println<br>
+    ✅ Compiled with javac<br>
+    ✅ Ran with java<br>
+    That's more concepts in one program than most languages require. You've earned it.</div>
+  </div>
+</div>
+
+<!-- ══════ 15 ══════ -->
+<div class="section" id="s15">
+  <div class="section-label">Section 15</div>
+  <h2>Data, Processing & The Real World 🌎</h2>
+
+  <p>Before diving into data types, let's zoom out and understand <em>why</em> we write code in the first place:</p>
+
+  <p>We write code to <strong>solve real-world problems</strong> using the virtual world. Think about it:</p>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <div class="emoji">🛒</div>
+      <div class="label">Shopping → Amazon</div>
+      <div class="desc">Buy anything without leaving home.</div>
+    </div>
+    <div class="cheat-card">
+      <div class="emoji">🚗</div>
+      <div class="label">Cab → Uber</div>
+      <div class="desc">Book a ride from your phone.</div>
+    </div>
+    <div class="cheat-card">
+      <div class="emoji">🏦</div>
+      <div class="label">Banking → Online</div>
+      <div class="desc">Transfer money without visiting a branch.</div>
+    </div>
+  </div>
+
+  <p>Every application, at its core, does two things:</p>
+  <ol class="steps">
+    <li><strong>Takes DATA</strong> — from a user, a database, an API, a sensor, etc.</li>
+    <li><strong>PROCESSES it</strong> — transforms, calculates, validates, stores, or displays it.</li>
+  </ol>
+
+  <p>So if you think about it — everything in programming revolves around <strong>data</strong>. And to work with data, you need a way to <strong>store</strong> it temporarily while your program processes it. That's where <strong>variables</strong> and <strong>data types</strong> come in.</p>
+</div>
+
+<!-- ══════ 16 ══════ -->
+<div class="section" id="s16">
+  <div class="section-label">Section 16</div>
+  <h2>Variables — Storing Data 📥</h2>
+
+  <p>A <strong>variable</strong> is a named container that holds a value in memory while your program runs. Think of it as a labeled box — the label is the variable name, and what's inside is the value.</p>
+
+  <h3>Creating (Declaring) a Variable</h3>
+  <p>In Java, you must always tell the compiler <strong>two things</strong> when creating a variable:</p>
+  <ol class="steps">
+    <li><strong>The type</strong> — what kind of data will it hold? (number? text? true/false?)</li>
+    <li><strong>The name</strong> — what do you want to call it?</li>
+  </ol>
+
+  <div class="code-block">
+    <div class="code-header"><span class="lang">java</span><span>variable declaration syntax</span></div>
+    <pre><span class="cmt">// Syntax:  type  name  =  value;</span>
+
+<span class="type">int</span> age <span class="punct">=</span> <span class="num">25</span><span class="punct">;</span>           <span class="cmt">// an integer variable named "age" holding 25</span>
+<span class="type">float</span> marks <span class="punct">=</span> <span class="num">6.5f</span><span class="punct">;</span>     <span class="cmt">// a float variable named "marks" holding 6.5</span>
+<span class="type">char</span> grade <span class="punct">=</span> <span class="str">'A'</span><span class="punct">;</span>       <span class="cmt">// a character variable holding 'A'</span>
+<span class="type">boolean</span> pass <span class="punct">=</span> <span class="kw">true</span><span class="punct">;</span>   <span class="cmt">// a boolean variable holding true</span></pre>
+  </div>
+
+  <div class="callout brain">
+    <div class="title">Java is Statically Typed</div>
+    <div class="body">Unlike Python or JavaScript, Java requires you to declare the <strong>type</strong> of every variable upfront. Once you say <code>int age</code>, that variable can <strong>only</strong> hold integers — you can't put a string in it later. This catches bugs at compile time rather than at runtime. More work upfront = fewer surprises later.</div>
+  </div>
+</div>
+
+<!-- ══════ 17 ══════ -->
+<div class="section" id="s17">
+  <div class="section-label">Section 17</div>
+  <h2>Primitive Data Types — All 8 of Them 📦</h2>
+
+  <p>Java has <strong>8 primitive data types</strong> — the raw building blocks for all data. They're not objects; they're stored directly in memory and are the most efficient way to hold values.</p>
+
+  <h3>The Big Picture — 4 Categories</h3>
+  <div class="diagram">
+    <div class="diagram-title">▸ Primitive Type Family Tree</div>
+    <svg class="arch-svg" viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+      <!-- Root -->
+      <rect x="250" y="10" width="200" height="36" rx="6" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="2"/>
+      <text x="280" y="34" fill="#f59e0b" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700">8 Primitive Types</text>
+
+      <!-- Branches -->
+      <line x1="180" y1="46" x2="180" y2="70" stroke="#60a5fa" stroke-width="1.5"/>
+      <line x1="350" y1="46" x2="180" y2="46" stroke="#444" stroke-width="1"/>
+      <line x1="350" y1="46" x2="350" y2="70" stroke="#34d399" stroke-width="1.5"/>
+      <line x1="350" y1="46" x2="500" y2="46" stroke="#444" stroke-width="1"/>
+      <line x1="500" y1="46" x2="500" y2="70" stroke="#a78bfa" stroke-width="1.5"/>
+      <line x1="350" y1="46" x2="630" y2="46" stroke="#444" stroke-width="1"/>
+      <line x1="630" y1="46" x2="630" y2="70" stroke="#f87171" stroke-width="1.5"/>
+      <line x1="350" y1="46" x2="60" y2="46" stroke="#444" stroke-width="1"/>
+      <line x1="60" y1="46" x2="60" y2="46" stroke="#444" stroke-width="1"/>
+
+      <!-- Integer group -->
+      <rect x="80" y="70" width="200" height="140" rx="6" fill="rgba(96,165,250,0.06)" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="120" y="93" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">Integers (whole #s)</text>
+      <text x="100" y="115" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="11">byte</text>
+      <text x="160" y="115" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">1 byte</text>
+      <text x="100" y="135" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="11">short</text>
+      <text x="160" y="135" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">2 bytes</text>
+      <text x="100" y="155" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">int</text>
+      <text x="160" y="155" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">4 bytes ⭐ default</text>
+      <text x="100" y="175" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="11">long</text>
+      <text x="160" y="175" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">8 bytes (needs L)</text>
+      <text x="100" y="198" fill="#6b7280" font-family="Bricolage Grotesque, sans-serif" font-size="9">Smallest → Largest memory</text>
+
+      <!-- Float group -->
+      <rect x="310" y="70" width="160" height="140" rx="6" fill="rgba(52,211,153,0.06)" stroke="#34d399" stroke-width="1.5"/>
+      <text x="330" y="93" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">Floating Point</text>
+      <text x="330" y="120" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="11">float</text>
+      <text x="390" y="120" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">4 bytes</text>
+      <text x="330" y="140" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">double</text>
+      <text x="400" y="140" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">8 bytes</text>
+      <text x="330" y="158" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">⭐ default</text>
+      <text x="330" y="183" fill="#6b7280" font-family="Bricolage Grotesque, sans-serif" font-size="9">double has more</text>
+      <text x="330" y="198" fill="#6b7280" font-family="Bricolage Grotesque, sans-serif" font-size="9">decimal precision</text>
+
+      <!-- Char group -->
+      <rect x="500" y="70" width="110" height="100" rx="6" fill="rgba(167,139,250,0.06)" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="520" y="93" fill="#a78bfa" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">Character</text>
+      <text x="520" y="118" fill="#a78bfa" font-family="JetBrains Mono, monospace" font-size="11">char</text>
+      <text x="560" y="118" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="9">2 bytes</text>
+      <text x="520" y="140" fill="#6b7280" font-family="Bricolage Grotesque, sans-serif" font-size="9">Unicode — all</text>
+      <text x="520" y="155" fill="#6b7280" font-family="Bricolage Grotesque, sans-serif" font-size="9">world languages!</text>
+
+      <!-- Boolean group -->
+      <rect x="630" y="70" width="60" height="100" rx="6" fill="rgba(248,113,113,0.06)" stroke="#f87171" stroke-width="1.5"/>
+      <text x="632" y="93" fill="#f87171" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700">Boolean</text>
+      <text x="632" y="118" fill="#f87171" font-family="JetBrains Mono, monospace" font-size="10">boolean</text>
+      <text x="636" y="140" fill="#6b7280" font-family="Bricolage Grotesque, sans-serif" font-size="9">true or</text>
+      <text x="636" y="155" fill="#6b7280" font-family="Bricolage Grotesque, sans-serif" font-size="9">false</text>
+    </svg>
+  </div>
+
+  <h3>The Complete Reference Table</h3>
+  <table class="dt-table">
+    <thead>
+      <tr><th>Type</th><th>Category</th><th>Size</th><th>Range / What It Stores</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="type-name">byte</td>
+        <td><span class="cat cat-int">Integer</span></td>
+        <td>1 byte (8 bits)</td>
+        <td>-128 to 127</td>
+        <td><code>byte b = 100;</code></td>
+      </tr>
+      <tr>
+        <td class="type-name">short</td>
+        <td><span class="cat cat-int">Integer</span></td>
+        <td>2 bytes (16 bits)</td>
+        <td>-32,768 to 32,767</td>
+        <td><code>short s = 1000;</code></td>
+      </tr>
+      <tr>
+        <td class="type-name">int</td>
+        <td><span class="cat cat-int">Integer</span></td>
+        <td>4 bytes (32 bits)</td>
+        <td>~±2.1 billion</td>
+        <td><code>int x = 42;</code></td>
+      </tr>
+      <tr>
+        <td class="type-name">long</td>
+        <td><span class="cat cat-int">Integer</span></td>
+        <td>8 bytes (64 bits)</td>
+        <td>Huge range (needs <code>L</code> suffix)</td>
+        <td><code>long l = 999L;</code></td>
+      </tr>
+      <tr>
+        <td class="type-name">float</td>
+        <td><span class="cat cat-float">Floating</span></td>
+        <td>4 bytes (32 bits)</td>
+        <td>~7 decimal digit precision (needs <code>f</code> suffix)</td>
+        <td><code>float f = 5.8f;</code></td>
+      </tr>
+      <tr>
+        <td class="type-name">double</td>
+        <td><span class="cat cat-float">Floating</span></td>
+        <td>8 bytes (64 bits)</td>
+        <td>~15 decimal digit precision (default!)</td>
+        <td><code>double d = 5.8;</code></td>
+      </tr>
+      <tr>
+        <td class="type-name">char</td>
+        <td><span class="cat cat-char">Character</span></td>
+        <td>2 bytes (16 bits)</td>
+        <td>Unicode — all world's characters</td>
+        <td><code>char c = 'A';</code></td>
+      </tr>
+      <tr>
+        <td class="type-name">boolean</td>
+        <td><span class="cat cat-bool">Boolean</span></td>
+        <td>~1 bit</td>
+        <td>Only <code>true</code> or <code>false</code></td>
+        <td><code>boolean b = true;</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Why <code>int</code> is the Default for Whole Numbers</h3>
+  <p>When you type a whole number like <code>42</code>, Java treats it as <code>int</code> by default. <code>int</code> is 4 bytes — big enough for most use cases, small enough to be efficient. If you need a bigger range, use <code>long</code> (and add <code>L</code>). If you want to save memory, use <code>short</code> or <code>byte</code>.</p>
+
+  <h3>Why <code>double</code> is the Default for Decimals</h3>
+  <p>When you type a decimal like <code>5.8</code>, Java treats it as <code>double</code> by default — NOT float. Why? Because <code>float</code> only has ~7 digits of precision (limited decimal places after the point), while <code>double</code> has ~15 digits. For scientific calculations and most real-world use, you need that extra precision. So Java chose the safer default.</p>
+
+  <h3>Why <code>char</code> is 2 Bytes in Java</h3>
+  <p>In C, a <code>char</code> is 1 byte (ASCII — only 128 English characters). Java said: <em>"Let's support every language on Earth."</em> So it uses <strong>Unicode</strong> (2 bytes, 16 bits), which can represent characters from English, Hindi, Chinese, Arabic, Japanese, emojis — everything. This is why Java is truly global.</p>
+
+  <div class="callout tip">
+    <div class="title">Single Quotes vs Double Quotes</div>
+    <div class="body">
+      <strong><code>'A'</code></strong> — single quotes = a <strong>char</strong> (one character).<br>
+      <strong><code>"Hello"</code></strong> — double quotes = a <strong>String</strong> (text, which is not a primitive — we'll cover Strings later).<br><br>
+      Mixing these up is a common beginner mistake. <code>char c = "A";</code> ← ❌ Wrong! Use single quotes for char.
+    </div>
+  </div>
+
+  <h3>All Data Types in One Code Example</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="lang">Hello.java</span><span>every primitive data type</span></div>
+    <pre><span class="kw">class</span> <span class="type">Hello</span> <span class="punct">{</span>
+    <span class="kw">public static void</span> <span class="fn">main</span><span class="punct">(</span><span class="type">String</span><span class="punct">[]</span> args<span class="punct">)</span> <span class="punct">{</span>
+
+        <span class="cmt">// ── INTEGER TYPES ──</span>
+        <span class="type">byte</span>   b <span class="punct">=</span> <span class="num">100</span><span class="punct">;</span>         <span class="cmt">// 1 byte  | range: -128 to 127</span>
+        <span class="type">short</span>  s <span class="punct">=</span> <span class="num">1000</span><span class="punct">;</span>        <span class="cmt">// 2 bytes | range: -32K to 32K</span>
+        <span class="type">int</span>    x <span class="punct">=</span> <span class="num">42</span><span class="punct">;</span>          <span class="cmt">// 4 bytes | DEFAULT for whole numbers</span>
+        <span class="type">long</span>   l <span class="punct">=</span> <span class="num">999L</span><span class="punct">;</span>        <span class="cmt">// 8 bytes | suffix L required!</span>
+
+        <span class="cmt">// ── FLOATING POINT TYPES ──</span>
+        <span class="type">float</span>  f <span class="punct">=</span> <span class="num">5.8f</span><span class="punct">;</span>        <span class="cmt">// 4 bytes | suffix f required!</span>
+        <span class="type">double</span> d <span class="punct">=</span> <span class="num">5.8</span><span class="punct">;</span>         <span class="cmt">// 8 bytes | DEFAULT for decimals</span>
+
+        <span class="cmt">// ── CHARACTER TYPE ──</span>
+        <span class="type">char</span>   c <span class="punct">=</span> <span class="str">'A'</span><span class="punct">;</span>         <span class="cmt">// 2 bytes | Unicode | SINGLE quotes!</span>
+
+        <span class="cmt">// ── BOOLEAN TYPE ──</span>
+        <span class="type">boolean</span> flag <span class="punct">=</span> <span class="kw">true</span><span class="punct">;</span>   <span class="cmt">// only true or false</span>
+
+        <span class="cmt">// Print them out to verify</span>
+        System<span class="punct">.</span>out<span class="punct">.</span><span class="fn">println</span><span class="punct">(</span>x<span class="punct">);</span>     <span class="cmt">// 42</span>
+        System<span class="punct">.</span>out<span class="punct">.</span><span class="fn">println</span><span class="punct">(</span>d<span class="punct">);</span>     <span class="cmt">// 5.8</span>
+        System<span class="punct">.</span>out<span class="punct">.</span><span class="fn">println</span><span class="punct">(</span>c<span class="punct">);</span>     <span class="cmt">// A</span>
+        System<span class="punct">.</span>out<span class="punct">.</span><span class="fn">println</span><span class="punct">(</span>flag<span class="punct">);</span>  <span class="cmt">// true</span>
+    <span class="punct">}</span>
+<span class="punct">}</span></pre>
+  </div>
+</div>
+
+<!-- ══════ 18 ══════ -->
+<div class="section" id="s18">
+  <div class="section-label">Section 18</div>
+  <h2>Literals & Type Suffixes 🏷️</h2>
+
+  <p><strong>Literals</strong> are the raw values you write directly in your code — the <code>42</code>, the <code>5.8f</code>, the <code>'A'</code>, the <code>true</code>. Java calls them "literals" because they are <em>literally</em> the values.</p>
+
+  <div class="diagram">
+    <div class="diagram-title">▸ Literal Defaults & Suffixes Cheat Sheet</div>
+    <svg class="arch-svg" viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
+      <!-- Integer Literal -->
+      <rect x="20" y="20" width="150" height="80" rx="6" fill="rgba(96,165,250,0.08)" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="52" y="50" fill="#60a5fa" font-family="JetBrains Mono, monospace" font-size="20" font-weight="700">42</text>
+      <text x="40" y="76" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">default → int</text>
+      <text x="40" y="90" fill="#6b7280" font-family="JetBrains Mono, monospace" font-size="9">no suffix needed</text>
+
+      <!-- Long Literal -->
+      <rect x="190" y="20" width="150" height="80" rx="6" fill="rgba(245,158,11,0.08)" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="220" y="50" fill="#f59e0b" font-family="JetBrains Mono, monospace" font-size="20" font-weight="700">42L</text>
+      <text x="210" y="76" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">suffix L → long</text>
+      <text x="210" y="90" fill="#6b7280" font-family="JetBrains Mono, monospace" font-size="9">must add L</text>
+
+      <!-- Double Literal -->
+      <rect x="360" y="20" width="150" height="80" rx="6" fill="rgba(52,211,153,0.08)" stroke="#34d399" stroke-width="1.5"/>
+      <text x="395" y="50" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="20" font-weight="700">5.8</text>
+      <text x="380" y="76" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">default → double</text>
+      <text x="380" y="90" fill="#6b7280" font-family="JetBrains Mono, monospace" font-size="9">no suffix needed</text>
+
+      <!-- Float Literal -->
+      <rect x="530" y="20" width="150" height="80" rx="6" fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="560" y="50" fill="#a78bfa" font-family="JetBrains Mono, monospace" font-size="20" font-weight="700">5.8f</text>
+      <text x="548" y="76" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">suffix f → float</text>
+      <text x="548" y="90" fill="#6b7280" font-family="JetBrains Mono, monospace" font-size="9">must add f</text>
+
+      <!-- Char -->
+      <rect x="20" y="120" width="150" height="80" rx="6" fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="55" y="150" fill="#a78bfa" font-family="JetBrains Mono, monospace" font-size="20" font-weight="700">'A'</text>
+      <text x="40" y="176" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">char literal</text>
+      <text x="40" y="190" fill="#6b7280" font-family="JetBrains Mono, monospace" font-size="9">single quotes!</text>
+
+      <!-- String -->
+      <rect x="190" y="120" width="150" height="80" rx="6" fill="rgba(52,211,153,0.08)" stroke="#34d399" stroke-width="1.5"/>
+      <text x="210" y="150" fill="#34d399" font-family="JetBrains Mono, monospace" font-size="20" font-weight="700">"Hi"</text>
+      <text x="210" y="176" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">String literal</text>
+      <text x="210" y="190" fill="#6b7280" font-family="JetBrains Mono, monospace" font-size="9">double quotes!</text>
+
+      <!-- Boolean -->
+      <rect x="360" y="120" width="150" height="80" rx="6" fill="rgba(248,113,113,0.08)" stroke="#f87171" stroke-width="1.5"/>
+      <text x="385" y="150" fill="#f87171" font-family="JetBrains Mono, monospace" font-size="18" font-weight="700">true</text>
+      <text x="380" y="176" fill="#9ca3af" font-family="JetBrains Mono, monospace" font-size="10">boolean literal</text>
+      <text x="380" y="190" fill="#6b7280" font-family="JetBrains Mono, monospace" font-size="9">true or false only</text>
+
+      <!-- Rule box -->
+      <rect x="530" y="120" width="150" height="80" rx="6" fill="rgba(245,158,11,0.06)" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 2"/>
+      <text x="548" y="148" fill="#f59e0b" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700">REMEMBER</text>
+      <text x="548" y="168" fill="#e5e5e5" font-family="Bricolage Grotesque, sans-serif" font-size="10">Whole # → int</text>
+      <text x="548" y="184" fill="#e5e5e5" font-family="Bricolage Grotesque, sans-serif" font-size="10">Decimal → double</text>
+      <text x="548" y="200" fill="#e5e5e5" font-family="Bricolage Grotesque, sans-serif" font-size="10">Override w/ L or f</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ══════ 19 ══════ -->
+<div class="section" id="s19">
+  <div class="section-label">Section 19</div>
+  <h2>Common Errors & Gotchas 🐛</h2>
+
+  <p>Errors are <strong>important</strong>. They're how you learn. Here are the ones you'll definitely hit in this session:</p>
+
+  <h3>Error 1: "Possible lossy conversion from double to float"</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="lang">java</span><span>❌ this fails</span></div>
+    <pre><span class="type">float</span> marks <span class="punct">=</span> <span class="num">6.5</span><span class="punct">;</span>   <span class="cmt">// ERROR! 6.5 is double by default</span></pre>
+  </div>
+  <div class="code-block">
+    <div class="code-header"><span class="lang">java</span><span>✅ fix it with f suffix</span></div>
+    <pre><span class="type">float</span> marks <span class="punct">=</span> <span class="num">6.5f</span><span class="punct">;</span>  <span class="cmt">// Works! The f tells Java it's a float.</span></pre>
+  </div>
+  <p>Why? Because <code>6.5</code> is a <code>double</code> (8 bytes) and you're trying to put it in a <code>float</code> (4 bytes). You'd lose precision. Java protects you from this — it's called a "lossy conversion." Adding <code>f</code> says: <em>"I know, and I'm okay with it."</em></p>
+
+  <h3>Error 2: "class, interface, enum, or record expected"</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="lang">Hello.java</span><span>❌ missing class structure</span></div>
+    <pre>System.out.println(<span class="str">"Hello"</span>);  <span class="cmt">// Just a loose statement — no class!</span></pre>
+  </div>
+  <p>Fix: Wrap everything in a <code>class</code> with a <code>main</code> method. Java files need structure.</p>
+
+  <h3>Error 3: "cannot find symbol: method print(String)"</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="lang">jshell</span><span>❌ print alone doesn't work</span></div>
+    <pre>jshell> print(<span class="str">"Hello"</span>);
+<span style="color:#f87171;">|  Error: cannot find symbol</span></pre>
+  </div>
+  <p>Fix: Use the full path — <code>System.out.println("Hello");</code>. In Java, <code>print</code> isn't a standalone function; it belongs to <code>System.out</code>.</p>
+
+  <h3>Error 4: Missing semicolon</h3>
+  <p>Forgetting <code>;</code> at the end of any statement = compile error. Java uses semicolons the way English uses periods. Every. Single. Statement.</p>
+
+  <h3>Error 5: Wrong folder in terminal</h3>
+  <p>If you run <code>javac Hello.java</code> but your terminal is in a different folder than where <code>Hello.java</code> is saved — you'll get "file not found." Always <code>cd</code> to the correct folder first, or use VS Code's built-in terminal which opens in your project folder automatically.</p>
+
+  <div class="callout coffee">
+    <div class="title">Embrace Errors</div>
+    <div class="body">Errors are not failures — they're feedback. Every error message is Java telling you exactly what went wrong. Read the message, understand it, fix it. The more errors you see early on, the faster you learn to avoid them. Errors are your teachers.</div>
+  </div>
+</div>
+
+<!-- ══════ 20 ══════ -->
+<div class="section" id="s20">
+  <div class="section-label">Session Recap</div>
+  <h2>🎯 Grand Recap — Everything at a Glance</h2>
+
+  <div class="recap">
+    <h3>✅ Session 1 Complete Checklist</h3>
+    <ul>
+      <li>Java is consistently a top-5 language — used in enterprise, web, Android, and interviews across all domains.</li>
+      <li>JVM runs not just Java but also Kotlin, Scala, Groovy — learning Java opens the entire JVM ecosystem.</li>
+      <li>Java is verbose to start but pays off in readability, maintainability, and large-scale projects.</li>
+      <li>Java was born in 1995 at Sun Microsystems (James Gosling). Oracle now owns it. Updates every 6 months.</li>
+      <li>Java is backward compatible — basics you learn today will still work in Java 30.</li>
+      <li><strong>Editor</strong> = just type code. <strong>IDE</strong> = type + compile + run + debug all in one. VS Code is a lightweight hybrid.</li>
+      <li>IDE options: VS Code (our pick), IntelliJ IDEA (best overall), Eclipse (enterprise), NetBeans (beginner-friendly).</li>
+      <li>Oracle JDK vs Open-Source JDK (Corretto, Adoptium, Zulu) — both work identically.</li>
+      <li>Always install an <strong>LTS</strong> version (JDK 17, 21…). Non-LTS versions expire in 6 months.</li>
+      <li>Verify install with <code>java --version</code> and <code>javac --version</code>.</li>
+      <li>If <code>javac</code> isn't found, set the <strong>PATH</strong> variable to your JDK's <code>bin</code> folder. Restart terminal after.</li>
+      <li>VS Code Extension Pack for Java is helpful but optional. You can compile/run from the terminal.</li>
+      <li>Use <strong>dark theme</strong> in VS Code — easier on the eyes during long sessions.</li>
+      <li>Java file extension is <code>.java</code>. Other languages: <code>.c</code>, <code>.cpp</code>, <code>.js</code>, <code>.py</code>.</li>
+      <li><strong>JShell</strong> (Java 9+) is a REPL for quick experiments — no class or main method needed.</li>
+      <li>JShell is for experiments. <code>.java</code> files are for real applications.</li>
+      <li><code>print()</code> alone doesn't work in Java — use <code>System.out.println()</code>.</li>
+      <li><code>println</code> = print + new line. <code>print</code> = print without new line.</li>
+      <li>Numbers can be used directly. Text must be in <strong>double quotes</strong>.</li>
+      <li>Every statement ends with a <strong>semicolon</strong> (<code>;</code>).</li>
+      <li>Java files require: a <strong>class</strong> + a <strong>main method</strong> with exact signature <code>public static void main(String[] args)</code>.</li>
+      <li>Java is Object-Oriented — all code lives inside classes.</li>
+      <li>Even with 1000 files, JVM starts from the one you specify — and that file needs <code>main()</code>.</li>
+      <li><strong>JDK</strong> ⊃ <strong>JRE</strong> ⊃ <strong>JVM</strong>. Install JDK → you get everything.</li>
+      <li>JVM = executes bytecode. JRE = JVM + libraries. JDK = JRE + dev tools (javac).</li>
+      <li>Not every machine has javac — end-users only need JRE.</li>
+      <li>Compilation: <code>javac Hello.java</code> → produces <code>Hello.class</code> (bytecode) → <code>java Hello</code> runs it on JVM.</li>
+      <li><code>javac</code> takes the file name with <code>.java</code>. <code>java</code> takes the class name without extension.</li>
+      <li>Your Java app is <strong>platform independent</strong>. The JVM is <strong>platform dependent</strong>.</li>
+      <li>WORA works because bytecode is universal — but each OS needs its own JVM build.</li>
+      <li>Programming = <strong>Data + Processing</strong>. Every app (Amazon, Uber, banking) follows this pattern.</li>
+      <li>Variables have a <strong>type</strong> and a <strong>name</strong>. Java is statically typed — type is declared upfront.</li>
+      <li>8 primitive types: <code>byte</code>, <code>short</code>, <code>int</code>, <code>long</code>, <code>float</code>, <code>double</code>, <code>char</code>, <code>boolean</code>.</li>
+      <li><code>int</code> (4 bytes) is the default for whole numbers. <code>double</code> (8 bytes) is the default for decimals.</li>
+      <li><code>float</code> needs <code>f</code> suffix. <code>long</code> needs <code>L</code> suffix. Without them → compile error.</li>
+      <li><code>char</code> is 2 bytes in Java (Unicode) vs 1 byte in C (ASCII). Supports all world languages.</li>
+      <li>Single quotes <code>'A'</code> for char. Double quotes <code>"Hello"</code> for String.</li>
+      <li><code>boolean</code> can only be <code>true</code> or <code>false</code> — nothing else.</li>
+      <li>Literals are the raw values you write in code. Java infers their type by default rules.</li>
+      <li>Errors are teachers — read them, understand them, fix them. They're Java helping you.</li>
+    </ul>
+  </div>
+
+  <p style="text-align:center; margin-top: 2.5rem;"><span class="handwriting">Session 1 done — you've earned that coffee break! ☕</span></p>
+  <p style="text-align:center; color: var(--text-dim); font-size: 0.88rem; margin-top: 0.5rem;">Pass these notes forward. A beginner who reads this top-to-bottom will understand everything. No gaps.</p>
+</div>
+
+</div>
+
+<div class="footer">
+  Complete Core Java Guide — Notes #1 &nbsp;|&nbsp; 20 Sections &nbsp;|&nbsp; Built for revision, not regret.<br>
+  <span style="color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; margin-top: 0.5rem; display: inline-block;">Next up: Notes #2 → Operators, Type Casting, Conditionals & Loops</span>
+</div>
+
+</body>
+</html>
