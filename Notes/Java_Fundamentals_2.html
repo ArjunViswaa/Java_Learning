@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete Core Java Guide — Notes #2</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #222;
+    --accent: #e879f9;
+    --accent2: #f472b6;
+    --accent3: #34d399;
+    --accent4: #60a5fa;
+    --accent5: #fbbf24;
+    --red: #f87171;
+    --text: #e5e5e5;
+    --dim: #9ca3af;
+    --border: #333;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Bricolage Grotesque',sans-serif;line-height:1.75;overflow-x:hidden;}
+
+  /* Hero */
+  .hero{min-height:58vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem;
+    background:radial-gradient(ellipse at 30% 50%,rgba(232,121,249,.08) 0%,transparent 60%),radial-gradient(ellipse at 70% 60%,rgba(96,165,250,.06) 0%,transparent 60%);}
+  .hero-badge{display:inline-block;background:var(--accent);color:#000;font-size:.73rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:.35rem 1rem;border-radius:2px;margin-bottom:1.5rem;}
+  .hero h1{font-size:clamp(2.4rem,5.5vw,4.2rem);font-weight:800;line-height:1.1;margin-bottom:1rem;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent5));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:1.12rem;color:var(--dim);max-width:640px;}
+  .meta{margin-top:2rem;display:flex;gap:1.1rem;flex-wrap:wrap;justify-content:center;}
+  .meta span{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--dim);background:var(--surface);padding:.4rem 1rem;border-radius:4px;border:1px solid var(--border);}
+
+  /* TOC */
+  .toc{max-width:860px;margin:0 auto 4rem;padding:0 2rem;}
+  .toc h2{font-size:1.35rem;color:var(--accent);margin-bottom:1rem;}
+  .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.5rem;}
+  .toc-item{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);padding:.65rem 1rem;border-radius:4px;font-size:.86rem;transition:border-color .2s;}
+  .toc-item:hover{border-left-color:var(--accent3);}
+  .toc-item .n{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:.7rem;margin-right:.5rem;}
+
+  /* Content */
+  .content{max-width:880px;margin:0 auto;padding:0 2rem 6rem;}
+  .section{margin-bottom:4.5rem;}
+  .section-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem;}
+  .section h2{font-size:1.95rem;font-weight:800;margin-bottom:1.4rem;line-height:1.2;}
+  .section h3{font-size:1.22rem;font-weight:600;margin:2rem 0 .7rem;color:var(--accent3);}
+  .section h4{font-size:1.02rem;font-weight:600;margin:1.4rem 0 .55rem;color:var(--accent4);}
+  .section p,.section>li{margin-bottom:.85rem;}
+
+  /* Callouts */
+  .co{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.2rem 1.4rem;margin:1.4rem 0;position:relative;}
+  .co::before{position:absolute;top:-10px;left:16px;font-size:1.2rem;}
+  .co.tip{border-left:3px solid var(--accent3);}.co.tip::before{content:"💡";}
+  .co.warn{border-left:3px solid var(--accent5);}.co.warn::before{content:"⚠️";}
+  .co.fun{border-left:3px solid var(--accent);}.co.fun::before{content:"🎉";}
+  .co.brain{border-left:3px solid var(--accent4);}.co.brain::before{content:"🧠";}
+  .co.coffee{border-left:3px solid var(--accent2);}.co.coffee::before{content:"☕";}
+  .co.err{border-left:3px solid var(--red);}.co.err::before{content:"❌";}
+  .co strong{color:var(--accent5);}
+  .co .t{font-weight:700;margin-bottom:.35rem;font-size:.93rem;}
+  .co .b{font-size:.88rem;color:var(--dim);line-height:1.65;}
+
+  .hw{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--accent);display:inline-block;}
+
+  /* Code */
+  .cb{background:#111;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:1rem 0;}
+  .ch{background:var(--surface2);padding:.5rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--dim);display:flex;justify-content:space-between;border-bottom:1px solid var(--border);}
+  .ch .l{color:var(--accent);font-weight:600;}
+  pre{padding:1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.83rem;line-height:1.7;}
+  .kw{color:#c084fc;}.ty{color:#60a5fa;}.st{color:#34d399;}.cm{color:#6b7280;font-style:italic;}.nm{color:#fb923c;}.fn{color:#fbbf24;}.p{color:#9ca3af;}
+
+  /* Diagram */
+  .dia{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:2rem;margin:2rem 0;overflow-x:auto;}
+  .dia-t{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:1.4rem;text-align:center;}
+  .svg{display:block;margin:0 auto;max-width:100%;}
+
+  /* Tables */
+  .tb{width:100%;border-collapse:collapse;margin:1.4rem 0;font-size:.85rem;}
+  .tb th{background:var(--surface2);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;text-align:left;padding:.7rem 1rem;border-bottom:2px solid var(--accent);}
+  .tb td{padding:.6rem 1rem;border-bottom:1px solid var(--border);color:var(--dim);}
+  .tb tr:hover td{background:var(--surface);color:var(--text);}
+  .tb .tn{font-family:'JetBrains Mono',monospace;color:var(--accent4);font-weight:600;}
+
+  /* Truth table */
+  .tt{width:auto;border-collapse:collapse;margin:1rem 0;font-size:.84rem;font-family:'JetBrains Mono',monospace;}
+  .tt th{background:var(--surface2);color:var(--accent);padding:.5rem 1.2rem;border-bottom:2px solid var(--accent);text-align:center;}
+  .tt td{padding:.45rem 1.2rem;border-bottom:1px solid var(--border);text-align:center;}
+  .tt .true{color:var(--accent3);font-weight:700;}
+  .tt .false{color:var(--red);font-weight:700;}
+
+  /* VS grid */
+  .vg{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.4rem 0;}
+  .vc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1.2rem;}
+  .vc h4{font-size:.88rem;margin-bottom:.65rem;display:flex;align-items:center;gap:.5rem;}
+  .vc ul{list-style:none;font-size:.84rem;color:var(--dim);}
+  .vc ul li{padding:.2rem 0 .2rem 1rem;position:relative;}
+  .vc ul li::before{content:"→";position:absolute;left:0;color:var(--accent);}
+
+  /* Cheat cards */
+  .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.9rem;margin:1.4rem 0;}
+  .cc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.9rem;text-align:center;}
+  .cc .e{font-size:1.5rem;margin-bottom:.4rem;}
+  .cc .cl{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent4);font-weight:600;}
+  .cc .cd{font-size:.76rem;color:var(--dim);margin-top:.25rem;}
+
+  /* Steps */
+  .steps{counter-reset:step;list-style:none;margin:1rem 0;}
+  .steps li{counter-increment:step;position:relative;padding:.55rem 0 .55rem 2.5rem;font-size:.9rem;}
+  .steps li::before{content:counter(step);position:absolute;left:0;top:.5rem;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--accent);color:#000;font-weight:800;font-size:.73rem;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;}
+
+  /* Recap */
+  .recap{background:linear-gradient(135deg,rgba(232,121,249,.06),rgba(96,165,250,.06));border:1px dashed var(--accent);border-radius:8px;padding:1.5rem 2rem;margin:2rem 0;}
+  .recap h3{color:var(--accent)!important;margin-top:0!important;font-size:1.1rem!important;}
+  .recap ul{list-style:none;margin-top:.7rem;}
+  .recap ul li{padding:.28rem 0 .28rem 1.5rem;font-size:.86rem;color:var(--dim);position:relative;}
+  .recap ul li::before{content:"✓";position:absolute;left:0;color:var(--accent3);font-weight:700;}
+
+  /* Compare row */
+  .cr{display:grid;grid-template-columns:1fr auto 1fr;gap:.75rem;align-items:center;margin:1rem 0;}
+  .crb{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:.86rem;}
+  .crv{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--red);font-weight:700;text-align:center;}
+
+  .footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--dim);font-size:.8rem;}
+
+  @media(max-width:640px){.vg,.cr{grid-template-columns:1fr;}.crv{text-align:center;}.hero h1{font-size:2rem;}.section h2{font-size:1.45rem;}pre{font-size:.73rem;padding:1rem;}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<div class="hero">
+  <div class="hero-badge">Notes #2 — The Arsenal</div>
+  <h1>Literals, Operators, Conditionals & Loops</h1>
+  <p>From binary literals to nested for-loops — every tool you need to make Java actually <em>do</em> things.</p>
+  <div class="meta">
+    <span>📅 Session 2</span>
+    <span>🔢 Literals & Casting</span>
+    <span>⚡ All Operators</span>
+    <span>🔀 if / switch</span>
+    <span>🔁 while / do-while / for</span>
+  </div>
+</div>
+
+<!-- ═══════════ TOC ═══════════ -->
+<div class="toc">
+  <h2>📑 What's Inside</h2>
+  <div class="toc-grid">
+    <div class="toc-item"><span class="n">01</span>Literals Deep Dive</div>
+    <div class="toc-item"><span class="n">02</span>Type Conversion (Widening)</div>
+    <div class="toc-item"><span class="n">03</span>Type Casting (Narrowing)</div>
+    <div class="toc-item"><span class="n">04</span>Float ↔ Int Casting & Modulus Overflow</div>
+    <div class="toc-item"><span class="n">05</span>Type Promotion</div>
+    <div class="toc-item"><span class="n">06</span>Java Shortcut: Single-Step Run</div>
+    <div class="toc-item"><span class="n">07</span>Arithmetic Operators</div>
+    <div class="toc-item"><span class="n">08</span>Compound Assignment Operators</div>
+    <div class="toc-item"><span class="n">09</span>Increment & Decrement (++/--)</div>
+    <div class="toc-item"><span class="n">10</span>Pre vs Post Increment</div>
+    <div class="toc-item"><span class="n">11</span>Relational Operators</div>
+    <div class="toc-item"><span class="n">12</span>Logical Operators & Truth Tables</div>
+    <div class="toc-item"><span class="n">13</span>Short-Circuit Operators (&&, ||)</div>
+    <div class="toc-item"><span class="n">14</span>NOT Operator (!)</div>
+    <div class="toc-item"><span class="n">15</span>Conditional Statements — if</div>
+    <div class="toc-item"><span class="n">16</span>if-else</div>
+    <div class="toc-item"><span class="n">17</span>if-else-if Ladder</div>
+    <div class="toc-item"><span class="n">18</span>Ternary Operator (?:)</div>
+    <div class="toc-item"><span class="n">19</span>Switch-Case Statement</div>
+    <div class="toc-item"><span class="n">20</span>While Loop</div>
+    <div class="toc-item"><span class="n">21</span>Do-While Loop</div>
+    <div class="toc-item"><span class="n">22</span>For Loop</div>
+    <div class="toc-item"><span class="n">23</span>Nested Loops</div>
+    <div class="toc-item"><span class="n">24</span>Which Loop to Use When?</div>
+    <div class="toc-item"><span class="n">25</span>Debug Mode in VS Code</div>
+    <div class="toc-item"><span class="n">26</span>Grand Recap & Checklist</div>
+  </div>
+</div>
+
+<!-- ═══════════ CONTENT ═══════════ -->
+<div class="content">
+
+<!-- ══ 01 ══ -->
+<div class="section">
+  <div class="section-label">Section 01</div>
+  <h2>Literals Deep Dive 🔢</h2>
+
+  <p>We learned about literals in Notes #1 — they're the raw values you type in code. But Java supports more than just decimal numbers. You can write values in <strong>binary</strong>, <strong>hexadecimal</strong>, and even use <strong>underscores</strong> for readability.</p>
+
+  <h3>Binary Literals (Base 2)</h3>
+  <p>Prefix with <code>0b</code> or <code>0B</code>. Java stores it as a normal int but you write it in binary form.</p>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>binary literal</span></div>
+<pre><span class="ty">int</span> num1 <span class="p">=</span> <span class="nm">0b101</span><span class="p">;</span>   <span class="cm">// binary 101 = decimal 5</span>
+System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>num1<span class="p">);</span>  <span class="cm">// Output: 5</span></pre></div>
+
+  <h3>Hexadecimal Literals (Base 16)</h3>
+  <p>Prefix with <code>0x</code> or <code>0X</code>. Digits go from 0–9 and A–F.</p>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>hex literal</span></div>
+<pre><span class="ty">int</span> num1 <span class="p">=</span> <span class="nm">0x7E</span><span class="p">;</span>    <span class="cm">// hex 7E = decimal 126</span>
+System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>num1<span class="p">);</span>  <span class="cm">// Output: 126</span></pre></div>
+
+  <h3>Underscores in Numeric Literals</h3>
+  <p>Ever get confused counting zeros? Java lets you put underscores between digits for readability. They're ignored by the compiler.</p>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>underscore readability</span></div>
+<pre><span class="ty">int</span> bigNum <span class="p">=</span> <span class="nm">10_00_00_000</span><span class="p">;</span>  <span class="cm">// same as 100000000</span>
+System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>bigNum<span class="p">);</span>    <span class="cm">// Output: 100000000</span></pre></div>
+
+  <h3>Float & Double Literals — Scientific Notation</h3>
+  <p>You can assign integer values to double/float (auto-widening), and use <code>e</code> for scientific notation:</p>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>scientific notation</span></div>
+<pre><span class="ty">double</span> num1 <span class="p">=</span> <span class="nm">56</span><span class="p">;</span>        <span class="cm">// int → double auto-conversion → 56.0</span>
+<span class="ty">double</span> num1 <span class="p">=</span> <span class="nm">12e10</span><span class="p">;</span>     <span class="cm">// 12 × 10^10 = 1.2E11</span></pre></div>
+
+  <h3>Boolean Literals — No 0 and 1!</h3>
+  <div class="co err">
+    <div class="t">Java ≠ C/C++</div>
+    <div class="b">In Java, boolean only accepts <code>true</code> or <code>false</code>. You <strong>cannot</strong> assign <code>0</code> or <code>1</code> to a boolean. <code>boolean b = 1;</code> → ❌ Error! This is different from C/C++ where 0 = false and non-zero = true.</div>
+  </div>
+
+  <h3>Character as Integer</h3>
+  <p>Characters are internally stored as numbers (Unicode values). You can increment them!</p>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>char arithmetic</span></div>
+<pre><span class="ty">char</span> c <span class="p">=</span> <span class="st">'a'</span><span class="p">;</span>
+c<span class="p">++;</span>   <span class="cm">// 'a' becomes 'b' (97 → 98 in Unicode)</span>
+System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>c<span class="p">);</span>  <span class="cm">// Output: b</span></pre></div>
+</div>
+
+<!-- ══ 02 ══ -->
+<div class="section">
+  <div class="section-label">Section 02</div>
+  <h2>Type Conversion (Widening) 📈</h2>
+
+  <p><strong>Type conversion</strong> (also called <strong>implicit conversion</strong> or <strong>widening</strong>) happens automatically when you store a smaller type into a larger type. It's safe — no data loss.</p>
+
+  <div class="dia">
+    <div class="dia-t">▸ Widening Direction — Small → Big (automatic)</div>
+    <svg class="svg" viewBox="0 0 700 80" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="aw" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#34d399"/></marker></defs>
+      <rect x="10" y="22" width="60" height="36" rx="4" fill="rgba(96,165,250,.1)" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="22" y="46" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">byte</text>
+      <line x1="75" y1="40" x2="110" y2="40" stroke="#34d399" stroke-width="1.5" marker-end="url(#aw)"/>
+      <rect x="115" y="22" width="65" height="36" rx="4" fill="rgba(96,165,250,.1)" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="123" y="46" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">short</text>
+      <line x1="185" y1="40" x2="220" y2="40" stroke="#34d399" stroke-width="1.5" marker-end="url(#aw)"/>
+      <rect x="225" y="22" width="55" height="36" rx="4" fill="rgba(52,211,153,.12)" stroke="#34d399" stroke-width="2"/>
+      <text x="237" y="46" fill="#34d399" font-family="JetBrains Mono,monospace" font-size="12" font-weight="700">int</text>
+      <line x1="285" y1="40" x2="320" y2="40" stroke="#34d399" stroke-width="1.5" marker-end="url(#aw)"/>
+      <rect x="325" y="22" width="60" height="36" rx="4" fill="rgba(96,165,250,.1)" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="335" y="46" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">long</text>
+      <line x1="390" y1="40" x2="425" y2="40" stroke="#34d399" stroke-width="1.5" marker-end="url(#aw)"/>
+      <rect x="430" y="22" width="65" height="36" rx="4" fill="rgba(96,165,250,.1)" stroke="#60a5fa" stroke-width="1.5"/>
+      <text x="437" y="46" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">float</text>
+      <line x1="500" y1="40" x2="535" y2="40" stroke="#34d399" stroke-width="1.5" marker-end="url(#aw)"/>
+      <rect x="540" y="22" width="75" height="36" rx="4" fill="rgba(232,121,249,.1)" stroke="#e879f9" stroke-width="2"/>
+      <text x="546" y="46" fill="#e879f9" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">double</text>
+      <text x="200" y="14" fill="#34d399" font-family="Bricolage Grotesque,sans-serif" font-size="10" font-weight="600">← AUTOMATIC (safe, no data loss) →</text>
+    </svg>
+  </div>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>implicit widening</span></div>
+<pre><span class="ty">byte</span> b <span class="p">=</span> <span class="nm">127</span><span class="p">;</span>
+<span class="ty">int</span>  a <span class="p">=</span> b<span class="p">;</span>   <span class="cm">// byte → int automatically. No casting needed.</span>
+System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>a<span class="p">);</span>  <span class="cm">// Output: 127</span></pre></div>
+
+  <div class="co tip">
+    <div class="t">Analogy: Small Box → Big Box</div>
+    <div class="b">You can always put a small item in a bigger box — nothing is lost. That's widening. <code>byte → int</code>, <code>int → double</code> — always safe, always automatic.</div>
+  </div>
+</div>
+
+<!-- ══ 03 ══ -->
+<div class="section">
+  <div class="section-label">Section 03</div>
+  <h2>Type Casting (Narrowing) 📉</h2>
+
+  <p><strong>Type casting</strong> (also called <strong>explicit conversion</strong> or <strong>narrowing</strong>) is when you force a bigger type into a smaller type. Java won't do this automatically because you might lose data — so you must explicitly say "I know what I'm doing."</p>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>explicit narrowing — casting</span></div>
+<pre><span class="ty">int</span> a <span class="p">=</span> <span class="nm">12</span><span class="p">;</span>
+<span class="ty">byte</span> b <span class="p">=</span> a<span class="p">;</span>          <span class="cm">// ❌ ERROR! int → byte not allowed automatically</span>
+<span class="ty">byte</span> b <span class="p">=</span> <span class="p">(</span><span class="ty">byte</span><span class="p">)</span> a<span class="p">;</span>  <span class="cm">// ✅ Explicit cast. Works! 12 fits in byte range.</span></pre></div>
+
+  <div class="dia">
+    <div class="dia-t">▸ Casting Syntax</div>
+    <svg class="svg" viewBox="0 0 600 70" xmlns="http://www.w3.org/2000/svg">
+      <text x="30" y="40" fill="#e5e5e5" font-family="JetBrains Mono,monospace" font-size="18">byte b = </text>
+      <rect x="180" y="14" width="80" height="40" rx="4" fill="rgba(232,121,249,.12)" stroke="#e879f9" stroke-width="2"/>
+      <text x="191" y="40" fill="#e879f9" font-family="JetBrains Mono,monospace" font-size="16" font-weight="700">(byte)</text>
+      <text x="270" y="40" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="18"> a;</text>
+      <text x="195" y="68" fill="#e879f9" font-family="Bricolage Grotesque,sans-serif" font-size="10">↑ target type in brackets</text>
+    </svg>
+  </div>
+
+  <div class="co warn">
+    <div class="t">Not Everything Can Be Cast!</div>
+    <div class="b">You <strong>cannot</strong> cast between unrelated types. For example, <code>char → boolean</code> is impossible because they represent completely different things. Casting only works within the numeric family (byte, short, int, long, float, double) and with char (since char is internally a number).</div>
+  </div>
+</div>
+
+<!-- ══ 04 ══ -->
+<div class="section">
+  <div class="section-label">Section 04</div>
+  <h2>Float → Int Casting & Modulus Overflow 🔥</h2>
+
+  <h3>Float/Double → Int: Loses Decimal Part</h3>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>decimal truncation</span></div>
+<pre><span class="ty">float</span> f <span class="p">=</span> <span class="nm">5.6f</span><span class="p">;</span>
+<span class="ty">int</span> x <span class="p">=</span> <span class="p">(</span><span class="ty">int</span><span class="p">)</span> f<span class="p">;</span>    <span class="cm">// x = 5 (0.6 is lost!)</span></pre></div>
+  <p>When you cast a decimal to an integer, the decimal part is simply <strong>chopped off</strong> (truncated, not rounded). <code>5.6</code> becomes <code>5</code>, not <code>6</code>.</p>
+
+  <h3>Overflow Casting: The Modulus Rule</h3>
+  <p>What happens when you cast a value that's <strong>out of range</strong> of the target type?</p>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>overflow casting</span></div>
+<pre><span class="ty">int</span> a <span class="p">=</span> <span class="nm">257</span><span class="p">;</span>
+<span class="ty">byte</span> b <span class="p">=</span> <span class="p">(</span><span class="ty">byte</span><span class="p">)</span> a<span class="p">;</span>  <span class="cm">// byte range: -128 to 127 (256 values total)</span>
+System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>b<span class="p">);</span>  <span class="cm">// Output: 1</span></pre></div>
+
+  <div class="co brain">
+    <div class="t">The Modulus Formula</div>
+    <div class="b">When a value overflows during casting, Java uses modulus:<br><br>
+    <code>result = value % range</code><br>
+    <code>257 % 256 = 1</code><br><br>
+    The range of byte is 256 (-128 to +127). 257 divided by 256 gives remainder 1. So <code>b = 1</code>.</div>
+  </div>
+
+  <h3>Summary Table</h3>
+  <table class="tb">
+    <thead><tr><th>Concept</th><th>Direction</th><th>Keyword</th><th>Automatic?</th><th>Data Loss?</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Conversion (Widening)</td><td>Small → Big</td><td>Implicit</td><td>✅ Yes</td><td>❌ No</td></tr>
+      <tr><td class="tn">Casting (Narrowing)</td><td>Big → Small</td><td>Explicit <code>(type)</code></td><td>❌ No</td><td>⚠️ Possible</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══ 05 ══ -->
+<div class="section">
+  <div class="section-label">Section 05</div>
+  <h2>Type Promotion ⬆️</h2>
+
+  <p>When you perform an operation on two smaller types, Java automatically <strong>promotes</strong> the result to a larger type to avoid overflow.</p>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>type promotion</span></div>
+<pre><span class="ty">byte</span> a <span class="p">=</span> <span class="nm">10</span><span class="p">;</span>
+<span class="ty">byte</span> b <span class="p">=</span> <span class="nm">30</span><span class="p">;</span>
+<span class="ty">int</span> result <span class="p">=</span> a <span class="p">*</span> b<span class="p">;</span>  <span class="cm">// 10 × 30 = 300 → exceeds byte range!</span>
+<span class="cm">// Java promotes byte × byte → int automatically</span>
+System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>result<span class="p">);</span>  <span class="cm">// Output: 300</span></pre></div>
+
+  <div class="co tip">
+    <div class="t">Why This Matters</div>
+    <div class="b"><code>byte × byte</code> could overflow (max byte is 127, but 10 × 30 = 300). So Java promotes the result to <code>int</code>. You <strong>must</strong> store the result in an <code>int</code> (or larger), not a <code>byte</code>.</div>
+  </div>
+</div>
+
+<!-- ══ 06 ══ -->
+<div class="section">
+  <div class="section-label">Section 06</div>
+  <h2>Java Shortcut: Single-Step Run ⚡</h2>
+
+  <p>Normally you do two steps: <code>javac File.java</code> then <code>java File</code>. But from <strong>Java 11+</strong>, you can do it in one step for single-file programs:</p>
+
+  <div class="cb"><div class="ch"><span class="l">terminal</span><span>shortcut — compile + run in one command</span></div>
+<pre><span class="cm"># Instead of two steps:</span>
+javac Hello.java
+java Hello
+
+<span class="cm"># Do it in one:</span>
+<span class="fn">java</span> Hello.java   <span class="cm">← single step! (Java 11+)</span></pre></div>
+
+  <div class="co warn">
+    <div class="t">Learning Shortcut Only!</div>
+    <div class="b">This is only for single-file programs during learning. In real projects, you always compile separately. Also, this only works in <strong>Java 11 or newer</strong>. If it doesn't work on your machine, upgrade your JDK.</div>
+  </div>
+</div>
+
+<!-- ══ 07 ══ -->
+<div class="section">
+  <div class="section-label">Section 07</div>
+  <h2>Arithmetic Operators ➕➖✖️➗</h2>
+
+  <table class="tb">
+    <thead><tr><th>Operator</th><th>Symbol</th><th>Example (7, 5)</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">Addition</td><td><code>+</code></td><td><code>7 + 5</code></td><td>12</td></tr>
+      <tr><td class="tn">Subtraction</td><td><code>-</code></td><td><code>7 - 5</code></td><td>2</td></tr>
+      <tr><td class="tn">Multiplication</td><td><code>*</code></td><td><code>7 * 5</code></td><td>35</td></tr>
+      <tr><td class="tn">Division</td><td><code>/</code></td><td><code>7 / 5</code></td><td>1 (quotient only!)</td></tr>
+      <tr><td class="tn">Modulus</td><td><code>%</code></td><td><code>7 % 5</code></td><td>2 (remainder only!)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="co brain">
+    <div class="t">Integer Division Trap</div>
+    <div class="b"><code>7 / 5</code> = <strong>1</strong>, not 1.4! When both operands are integers, Java performs <strong>integer division</strong> — it gives the quotient and drops the remainder. Use <code>%</code> to get the remainder separately. If you want 1.4, make one operand a double: <code>7.0 / 5</code>.</div>
+  </div>
+</div>
+
+<!-- ══ 08 ══ -->
+<div class="section">
+  <div class="section-label">Section 08</div>
+  <h2>Compound Assignment Operators 📝</h2>
+
+  <p>Shortcuts for "do something and assign back to the same variable":</p>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>compound operators</span></div>
+<pre><span class="ty">int</span> num <span class="p">=</span> <span class="nm">7</span><span class="p">;</span>
+
+num <span class="p">=</span> num <span class="p">+</span> <span class="nm">2</span><span class="p">;</span>   <span class="cm">// long way</span>
+num <span class="p">+=</span> <span class="nm">2</span><span class="p">;</span>        <span class="cm">// shortcut! same result → 9</span>
+
+num <span class="p">-=</span> <span class="nm">2</span><span class="p">;</span>        <span class="cm">// subtract 2 → 7</span>
+num <span class="p">*=</span> <span class="nm">8</span><span class="p">;</span>        <span class="cm">// multiply by 8 → 56</span>
+num <span class="p">/=</span> <span class="nm">2</span><span class="p">;</span>        <span class="cm">// divide by 2 → 28</span>
+num <span class="p">%=</span> <span class="nm">5</span><span class="p">;</span>        <span class="cm">// remainder of num/5 → 3</span></pre></div>
+</div>
+
+<!-- ══ 09 ══ -->
+<div class="section">
+  <div class="section-label">Section 09</div>
+  <h2>Increment & Decrement (++/--) 🔼🔽</h2>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>increment and decrement</span></div>
+<pre><span class="ty">int</span> num <span class="p">=</span> <span class="nm">7</span><span class="p">;</span>
+num<span class="p">++;</span>    <span class="cm">// num = 8  (increment by 1)</span>
+num<span class="p">--;</span>    <span class="cm">// num = 7  (decrement by 1)</span>
+
+<span class="cm">// These are shortcuts for:</span>
+num <span class="p">+=</span> <span class="nm">1</span><span class="p">;</span>  <span class="cm">// same as num++</span>
+num <span class="p">-=</span> <span class="nm">1</span><span class="p">;</span>  <span class="cm">// same as num--</span></pre></div>
+
+  <p>Works on <code>char</code> too! <code>'a'++</code> becomes <code>'b'</code> because characters are internally numbers.</p>
+</div>
+
+<!-- ══ 10 ══ -->
+<div class="section">
+  <div class="section-label">Section 10</div>
+  <h2>Pre vs Post Increment — The Tricky Part 🎭</h2>
+
+  <p>When <code>++</code> or <code>--</code> is used <strong>as a standalone statement</strong>, both behave the same. The difference matters only when the result is <strong>assigned</strong> or <strong>used in an expression</strong>.</p>
+
+  <div class="cr">
+    <div class="crb">
+      <p style="margin:0;"><code style="color:var(--accent4);">result = num++</code></p>
+      <p style="margin:.3rem 0 0;color:var(--dim);font-size:.83rem;"><strong style="color:var(--accent5);">Post-increment:</strong> first <strong>fetch</strong> the value, then increment.<br>result gets the <em>old</em> value.</p>
+    </div>
+    <div class="crv">vs</div>
+    <div class="crb">
+      <p style="margin:0;"><code style="color:var(--accent3);">result = ++num</code></p>
+      <p style="margin:.3rem 0 0;color:var(--dim);font-size:.83rem;"><strong style="color:var(--accent5);">Pre-increment:</strong> first increment, then <strong>fetch</strong> the value.<br>result gets the <em>new</em> value.</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>the critical difference</span></div>
+<pre><span class="ty">int</span> num <span class="p">=</span> <span class="nm">7</span><span class="p">;</span>
+
+<span class="cm">// POST-increment</span>
+<span class="ty">int</span> result <span class="p">=</span> num<span class="p">++;</span>
+<span class="cm">// result = 7 (fetched BEFORE increment)</span>
+<span class="cm">// num = 8    (incremented AFTER)</span>
+
+<span class="cm">// PRE-increment</span>
+num <span class="p">=</span> <span class="nm">7</span><span class="p">;</span>  <span class="cm">// reset</span>
+<span class="ty">int</span> result <span class="p">=</span> <span class="p">++</span>num<span class="p">;</span>
+<span class="cm">// result = 8 (fetched AFTER increment)</span>
+<span class="cm">// num = 8    (incremented FIRST)</span></pre></div>
+
+  <div class="co brain">
+    <div class="t">Memory Aid</div>
+    <div class="b"><strong>Post (num++)</strong> = "use it, then change it" — the old value is used in the expression.<br>
+    <strong>Pre (++num)</strong> = "change it, then use it" — the new value is used in the expression.<br><br>
+    When used alone (<code>num++;</code> on its own line), both do the same thing. The difference <em>only</em> shows up during assignment or as part of a larger expression.</div>
+  </div>
+</div>
+
+<!-- ══ 11 ══ -->
+<div class="section">
+  <div class="section-label">Section 11</div>
+  <h2>Relational Operators 🔍</h2>
+
+  <p>Compare two values. Always return a <strong>boolean</strong> (<code>true</code> or <code>false</code>).</p>
+
+  <table class="tb">
+    <thead><tr><th>Operator</th><th>Meaning</th><th>Example (x=6, y=5)</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td class="tn"><code>&lt;</code></td><td>Less than</td><td><code>x &lt; y</code></td><td>false</td></tr>
+      <tr><td class="tn"><code>&gt;</code></td><td>Greater than</td><td><code>x &gt; y</code></td><td>true</td></tr>
+      <tr><td class="tn"><code>&lt;=</code></td><td>Less than or equal</td><td><code>x &lt;= y</code></td><td>false</td></tr>
+      <tr><td class="tn"><code>&gt;=</code></td><td>Greater than or equal</td><td><code>x &gt;= y</code></td><td>true</td></tr>
+      <tr><td class="tn"><code>==</code></td><td>Equal to (comparison!)</td><td><code>x == y</code></td><td>false</td></tr>
+      <tr><td class="tn"><code>!=</code></td><td>Not equal to</td><td><code>x != y</code></td><td>true</td></tr>
+    </tbody>
+  </table>
+
+  <div class="co warn">
+    <div class="t"><code>=</code> vs <code>==</code> — Don't Mix Them Up!</div>
+    <div class="b"><code>=</code> is the <strong>assignment</strong> operator (puts a value into a variable).<br>
+    <code>==</code> is the <strong>comparison</strong> operator (checks if two values are equal).<br><br>
+    <code>x = 5</code> → assigns 5 to x.<br>
+    <code>x == 5</code> → asks "is x equal to 5?" → returns true/false.</div>
+  </div>
+
+  <p>Works with <code>double</code> and <code>float</code> too — not just <code>int</code>!</p>
+</div>
+
+<!-- ══ 12 ══ -->
+<div class="section">
+  <div class="section-label">Section 12</div>
+  <h2>Logical Operators & Truth Tables 🧮</h2>
+
+  <p>Combine multiple boolean conditions into one result.</p>
+
+  <table class="tb">
+    <thead><tr><th>Operator</th><th>Symbol</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="tn">AND</td><td><code>&amp;</code> or <code>&amp;&amp;</code></td><td>Both must be true</td></tr>
+      <tr><td class="tn">OR</td><td><code>|</code> or <code>||</code></td><td>At least one must be true</td></tr>
+      <tr><td class="tn">NOT</td><td><code>!</code></td><td>Reverses the value</td></tr>
+      <tr><td class="tn">XOR</td><td><code>^</code></td><td>Exactly one must be true (covered later)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Truth Tables</h3>
+  <div class="vg">
+    <div class="vc">
+      <h4 style="color:var(--accent3);">AND (<code>&amp;&amp;</code>)</h4>
+      <table class="tt">
+        <tr><th>A</th><th>B</th><th>A &amp;&amp; B</th></tr>
+        <tr><td class="true">true</td><td class="true">true</td><td class="true">true</td></tr>
+        <tr><td class="true">true</td><td class="false">false</td><td class="false">false</td></tr>
+        <tr><td class="false">false</td><td class="true">true</td><td class="false">false</td></tr>
+        <tr><td class="false">false</td><td class="false">false</td><td class="false">false</td></tr>
+      </table>
+      <p style="font-size:.8rem;color:var(--dim);margin-top:.5rem;">Both must be true → true</p>
+    </div>
+    <div class="vc">
+      <h4 style="color:var(--accent5);">OR (<code>||</code>)</h4>
+      <table class="tt">
+        <tr><th>A</th><th>B</th><th>A || B</th></tr>
+        <tr><td class="true">true</td><td class="true">true</td><td class="true">true</td></tr>
+        <tr><td class="true">true</td><td class="false">false</td><td class="true">true</td></tr>
+        <tr><td class="false">false</td><td class="true">true</td><td class="true">true</td></tr>
+        <tr><td class="false">false</td><td class="false">false</td><td class="false">false</td></tr>
+      </table>
+      <p style="font-size:.8rem;color:var(--dim);margin-top:.5rem;">At least one true → true</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 13 ══ -->
+<div class="section">
+  <div class="section-label">Section 13</div>
+  <h2>Short-Circuit Operators (&amp;&amp;, ||) ⚡</h2>
+
+  <p>Java has <strong>single</strong> (<code>&amp;</code>, <code>|</code>) and <strong>double</strong> (<code>&amp;&amp;</code>, <code>||</code>) versions. The double versions are called <strong>short-circuit</strong> operators — they skip evaluating the second condition when the result is already determined.</p>
+
+  <div class="vg">
+    <div class="vc">
+      <h4 style="color:var(--accent3);"><code>&amp;&amp;</code> Short-Circuit AND</h4>
+      <ul>
+        <li>If first condition is <strong>false</strong> → skips second</li>
+        <li>Why? Because <code>false AND anything</code> = false</li>
+        <li>Saves time — doesn't evaluate unnecessarily</li>
+      </ul>
+    </div>
+    <div class="vc">
+      <h4 style="color:var(--accent5);"><code>||</code> Short-Circuit OR</h4>
+      <ul>
+        <li>If first condition is <strong>true</strong> → skips second</li>
+        <li>Why? Because <code>true OR anything</code> = true</li>
+        <li>Same optimization — takes the shortcut</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="co tip">
+    <div class="t">Always Use Short-Circuit in Practice</div>
+    <div class="b">From this point forward, always use <code>&amp;&amp;</code> and <code>||</code> instead of <code>&amp;</code> and <code>|</code>. They're faster and safer. The single versions evaluate <em>both</em> sides always, which wastes time and can cause errors if the second condition depends on the first being true.</div>
+  </div>
+</div>
+
+<!-- ══ 14 ══ -->
+<div class="section">
+  <div class="section-label">Section 14</div>
+  <h2>NOT Operator (!) 🔄</h2>
+
+  <p>Reverses a boolean value. <code>true</code> becomes <code>false</code>, <code>false</code> becomes <code>true</code>.</p>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>NOT operator</span></div>
+<pre><span class="ty">boolean</span> result <span class="p">=</span> <span class="p">(</span><span class="nm">5</span> <span class="p">></span> <span class="nm">8</span><span class="p">);</span>   <span class="cm">// false</span>
+System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(!</span>result<span class="p">);</span>    <span class="cm">// true (reversed!)</span></pre></div>
+</div>
+
+<!-- ══ 15 ══ -->
+<div class="section">
+  <div class="section-label">Section 15</div>
+  <h2>Conditional Statements — <code>if</code> 🔀</h2>
+
+  <p>The foundation of decision-making in programming. Your code's flow changes based on whether a condition is <code>true</code> or <code>false</code>.</p>
+
+  <div class="dia">
+    <div class="dia-t">▸ If Statement Flow</div>
+    <svg class="svg" viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="af" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#e879f9"/></marker></defs>
+      <!-- Flow in -->
+      <line x1="250" y1="10" x2="250" y2="40" stroke="#e879f9" stroke-width="1.5" marker-end="url(#af)"/>
+      <!-- Diamond -->
+      <polygon points="250,45 340,85 250,125 160,85" fill="rgba(232,121,249,.1)" stroke="#e879f9" stroke-width="2"/>
+      <text x="213" y="90" fill="#e879f9" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">condition?</text>
+      <!-- True path -->
+      <line x1="250" y1="125" x2="250" y2="155" stroke="#34d399" stroke-width="1.5" marker-end="url(#af)"/>
+      <text x="260" y="145" fill="#34d399" font-family="JetBrains Mono,monospace" font-size="10">true</text>
+      <rect x="185" y="158" width="130" height="32" rx="4" fill="rgba(52,211,153,.1)" stroke="#34d399" stroke-width="1.5"/>
+      <text x="200" y="179" fill="#34d399" font-family="JetBrains Mono,monospace" font-size="10">execute block</text>
+      <!-- False path -->
+      <line x1="340" y1="85" x2="420" y2="85" stroke="#f87171" stroke-width="1.5"/>
+      <line x1="420" y1="85" x2="420" y2="200" stroke="#f87171" stroke-width="1.5"/>
+      <line x1="420" y1="200" x2="250" y2="200" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#af)"/>
+      <text x="350" y="78" fill="#f87171" font-family="JetBrains Mono,monospace" font-size="10">false</text>
+      <text x="370" y="150" fill="#f87171" font-family="Bricolage Grotesque,sans-serif" font-size="10">skip block</text>
+      <!-- Continue -->
+      <line x1="250" y1="200" x2="250" y2="215" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#af)"/>
+      <text x="200" y="218" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">continue...</text>
+    </svg>
+  </div>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>if statement</span></div>
+<pre><span class="ty">int</span> x <span class="p">=</span> <span class="nm">18</span><span class="p">;</span>
+
+<span class="kw">if</span> <span class="p">(</span>x <span class="p">></span> <span class="nm">10</span><span class="p">)</span> <span class="p">{</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"Hello"</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="cm">// Output: Hello (because 18 > 10 is true)</span></pre></div>
+
+  <div class="co tip">
+    <div class="t">Curly Brackets Rule</div>
+    <div class="b">If you have <strong>one statement</strong> inside <code>if</code>, curly brackets are optional. But if you have <strong>two or more statements</strong>, you <strong>must</strong> use curly brackets. Best practice: always use them to avoid bugs.</div>
+  </div>
+
+  <div class="co brain">
+    <div class="t">Java ≠ Python — No Indentation Dependency</div>
+    <div class="b">Java doesn't care about indentation (unlike Python). Indentation is for <em>humans</em> reading the code. Java uses <strong>curly brackets</strong> <code>{ }</code> to define blocks. But always indent properly — your future self will thank you.</div>
+  </div>
+
+  <h3>Multiple Conditions with Logical Operators</h3>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>combining conditions</span></div>
+<pre><span class="ty">int</span> x <span class="p">=</span> <span class="nm">18</span><span class="p">;</span>
+<span class="cm">// x must be between 11 and 20 (inclusive)</span>
+<span class="kw">if</span> <span class="p">(</span>x <span class="p">></span> <span class="nm">10</span> <span class="p">&amp;&amp;</span> x <span class="p">&lt;=</span> <span class="nm">20</span><span class="p">)</span> <span class="p">{</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"In range!"</span><span class="p">);</span>
+<span class="p">}</span></pre></div>
+
+  <h3>Comments in Java</h3>
+  <p>Use <code>//</code> for single-line comments. The compiler ignores everything after <code>//</code> on that line. Great for leaving notes in your code.</p>
+</div>
+
+<!-- ══ 16 ══ -->
+<div class="section">
+  <div class="section-label">Section 16</div>
+  <h2>if-else — Either This or That 🔀</h2>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>if-else</span></div>
+<pre><span class="ty">int</span> x <span class="p">=</span> <span class="nm">5</span><span class="p">;</span>
+<span class="ty">int</span> y <span class="p">=</span> <span class="nm">7</span><span class="p">;</span>
+
+<span class="kw">if</span> <span class="p">(</span>x <span class="p">></span> y<span class="p">)</span> <span class="p">{</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>x<span class="p">);</span>  <span class="cm">// print bigger number</span>
+<span class="p">}</span> <span class="kw">else</span> <span class="p">{</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>y<span class="p">);</span>  <span class="cm">// Output: 7</span>
+<span class="p">}</span></pre></div>
+
+  <div class="co tip">
+    <div class="t">Rules</div>
+    <div class="b"><code>if</code> can exist alone. <code>else</code> <strong>cannot</strong> exist without an <code>if</code>. <code>else</code> has no condition — it catches everything that didn't match the <code>if</code>.</div>
+  </div>
+</div>
+
+<!-- ══ 17 ══ -->
+<div class="section">
+  <div class="section-label">Section 17</div>
+  <h2>if-else-if Ladder 🪜</h2>
+
+  <p>When you need to check multiple conditions one after another. Classic example: finding the greatest of three numbers.</p>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>greatest of three numbers</span></div>
+<pre><span class="ty">int</span> x <span class="p">=</span> <span class="nm">8</span><span class="p">,</span> y <span class="p">=</span> <span class="nm">17</span><span class="p">,</span> z <span class="p">=</span> <span class="nm">9</span><span class="p">;</span>
+
+<span class="kw">if</span> <span class="p">(</span>x <span class="p">>=</span> y <span class="p">&amp;&amp;</span> x <span class="p">>=</span> z<span class="p">)</span> <span class="p">{</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>x<span class="p">);</span>
+<span class="p">}</span> <span class="kw">else if</span> <span class="p">(</span>y <span class="p">>=</span> z<span class="p">)</span> <span class="p">{</span>         <span class="cm">// no need to check y >= x</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>y<span class="p">);</span>      <span class="cm">// because if x was biggest,</span>
+<span class="p">}</span> <span class="kw">else</span> <span class="p">{</span>                        <span class="cm">// we'd never reach here!</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>z<span class="p">);</span>
+<span class="p">}</span>
+<span class="cm">// Output: 17</span></pre></div>
+
+  <div class="co coffee">
+    <div class="t">Be an Efficient Programmer</div>
+    <div class="b">In the <code>else if</code> block, we only check <code>y >= z</code>, not <code>y >= x &amp;&amp; y >= z</code>. Why? Because if x were the greatest, the first <code>if</code> would have caught it. By the time we reach <code>else if</code>, x is already eliminated. <strong>Removing unnecessary checks saves time and resources.</strong></div>
+  </div>
+</div>
+
+<!-- ══ 18 ══ -->
+<div class="section">
+  <div class="section-label">Section 18</div>
+  <h2>Ternary Operator (?:) — if-else in One Line ✨</h2>
+
+  <p>When your if-else is just assigning a value based on a condition, you can write it in one line:</p>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>ternary operator</span></div>
+<pre><span class="ty">int</span> n <span class="p">=</span> <span class="nm">4</span><span class="p">;</span>
+
+<span class="cm">// Long way with if-else:</span>
+<span class="ty">int</span> result<span class="p">;</span>
+<span class="kw">if</span> <span class="p">(</span>n <span class="p">%</span> <span class="nm">2</span> <span class="p">==</span> <span class="nm">0</span><span class="p">)</span> <span class="p">{</span>
+    result <span class="p">=</span> <span class="nm">10</span><span class="p">;</span>  <span class="cm">// even</span>
+<span class="p">}</span> <span class="kw">else</span> <span class="p">{</span>
+    result <span class="p">=</span> <span class="nm">20</span><span class="p">;</span>  <span class="cm">// odd</span>
+<span class="p">}</span>
+
+<span class="cm">// Ternary — same logic, one line:</span>
+<span class="ty">int</span> result <span class="p">=</span> <span class="p">(</span>n <span class="p">%</span> <span class="nm">2</span> <span class="p">==</span> <span class="nm">0</span><span class="p">)</span> <span class="p">?</span> <span class="nm">10</span> <span class="p">:</span> <span class="nm">20</span><span class="p">;</span>
+<span class="cm">//           condition    ? if-true : if-false</span></pre></div>
+
+  <div class="co tip">
+    <div class="t">When to Use Ternary</div>
+    <div class="b">Only for <strong>simple assignments</strong> based on a condition. If your if-else has multiple statements or complex logic, stick with regular if-else. Ternary is not a replacement — it's a shortcut for specific cases.</div>
+  </div>
+</div>
+
+<!-- ══ 19 ══ -->
+<div class="section">
+  <div class="section-label">Section 19</div>
+  <h2>Switch-Case Statement 🔀</h2>
+
+  <p>When you're checking <strong>one variable against multiple exact values</strong> (not ranges), switch is cleaner and faster than a chain of if-else-if.</p>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>switch-case — day of the week</span></div>
+<pre><span class="ty">int</span> n <span class="p">=</span> <span class="nm">3</span><span class="p">;</span>
+
+<span class="kw">switch</span> <span class="p">(</span>n<span class="p">)</span> <span class="p">{</span>
+    <span class="kw">case</span> <span class="nm">1</span><span class="p">:</span> System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"Monday"</span><span class="p">);</span>    <span class="kw">break</span><span class="p">;</span>
+    <span class="kw">case</span> <span class="nm">2</span><span class="p">:</span> System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"Tuesday"</span><span class="p">);</span>   <span class="kw">break</span><span class="p">;</span>
+    <span class="kw">case</span> <span class="nm">3</span><span class="p">:</span> System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"Wednesday"</span><span class="p">);</span> <span class="kw">break</span><span class="p">;</span>
+    <span class="kw">case</span> <span class="nm">4</span><span class="p">:</span> System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"Thursday"</span><span class="p">);</span>  <span class="kw">break</span><span class="p">;</span>
+    <span class="kw">case</span> <span class="nm">5</span><span class="p">:</span> System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"Friday"</span><span class="p">);</span>    <span class="kw">break</span><span class="p">;</span>
+    <span class="kw">case</span> <span class="nm">6</span><span class="p">:</span> System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"Saturday"</span><span class="p">);</span>  <span class="kw">break</span><span class="p">;</span>
+    <span class="kw">case</span> <span class="nm">7</span><span class="p">:</span> System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"Sunday"</span><span class="p">);</span>    <span class="kw">break</span><span class="p">;</span>
+    <span class="kw">default</span><span class="p">:</span> System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"Invalid!"</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="cm">// Output: Wednesday</span></pre></div>
+
+  <div class="co err">
+    <div class="t">Fall-Through Trap — Why <code>break</code> is Critical</div>
+    <div class="b">Without <code>break</code>, once a case matches, Java executes <strong>all remaining cases</strong> below it — even ones that don't match! This is called <strong>fall-through</strong>. So if <code>n = 2</code> and you forget <code>break</code>, you'd get Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, and Invalid all printed. Always add <code>break</code> after each case.</div>
+  </div>
+
+  <div class="co tip">
+    <div class="t"><code>default</code> — The Catch-All</div>
+    <div class="b"><code>default</code> runs when <strong>none of the cases match</strong>. It's like the <code>else</code> of switch. No <code>break</code> needed for default since it's the last block.</div>
+  </div>
+</div>
+
+<!-- ══ 20 ══ -->
+<div class="section">
+  <div class="section-label">Section 20</div>
+  <h2>While Loop 🔁</h2>
+
+  <p>Repeats a block of code <strong>while</strong> a condition is true. Checks condition <strong>before</strong> each iteration.</p>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>while loop — print hi 4 times</span></div>
+<pre><span class="ty">int</span> i <span class="p">=</span> <span class="nm">1</span><span class="p">;</span>             <span class="cm">// 1. Initialize</span>
+
+<span class="kw">while</span> <span class="p">(</span>i <span class="p">&lt;=</span> <span class="nm">4</span><span class="p">)</span> <span class="p">{</span>       <span class="cm">// 2. Condition check</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"hi "</span> <span class="p">+</span> i<span class="p">);</span>
+    i<span class="p">++;</span>                 <span class="cm">// 3. Increment</span>
+<span class="p">}</span>
+<span class="cm">// Output: hi 1, hi 2, hi 3, hi 4</span></pre></div>
+
+  <div class="co warn">
+    <div class="t">Infinite Loop Danger!</div>
+    <div class="b">If you forget <code>i++</code>, the condition is always true and the loop runs forever — printing endlessly until your system runs out of memory. <strong>Always make sure the loop variable changes</strong> so the condition eventually becomes false.</div>
+  </div>
+
+  <div class="co brain">
+    <div class="t">Variable Scope</div>
+    <div class="b">The variable <code>i</code> is declared <strong>outside</strong> the loop. So it's still accessible after the loop ends. After the loop, <code>i</code> will be <code>5</code> (the value that made the condition false). That's why printing <code>i</code> after the loop gives 5.</div>
+  </div>
+
+  <h3>The <code>+</code> Operator for Concatenation</h3>
+  <p>The <code>+</code> operator does double duty in Java: it adds numbers, but when one side is a String, it <strong>concatenates</strong> (joins) them. <code>"hi " + 3</code> produces the string <code>"hi 3"</code>.</p>
+</div>
+
+<!-- ══ 21 ══ -->
+<div class="section">
+  <div class="section-label">Section 21</div>
+  <h2>Do-While Loop 🔁✅</h2>
+
+  <p>Same as while, but checks the condition <strong>after</strong> executing the block. Guarantees <strong>at least one execution</strong> even if the condition is false.</p>
+
+  <div class="cr">
+    <div class="crb">
+      <p style="margin:0;font-weight:700;color:var(--accent4);">while</p>
+      <p style="margin:.3rem 0 0;color:var(--dim);font-size:.83rem;">Check first, then execute.<br>Might execute <strong>zero</strong> times.</p>
+    </div>
+    <div class="crv">vs</div>
+    <div class="crb">
+      <p style="margin:0;font-weight:700;color:var(--accent);">do-while</p>
+      <p style="margin:.3rem 0 0;color:var(--dim);font-size:.83rem;">Execute first, then check.<br>Always executes <strong>at least once</strong>.</p>
+    </div>
+  </div>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>do-while — executes at least once</span></div>
+<pre><span class="ty">int</span> i <span class="p">=</span> <span class="nm">5</span><span class="p">;</span>   <span class="cm">// condition will be false immediately!</span>
+
+<span class="kw">do</span> <span class="p">{</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"hi "</span> <span class="p">+</span> i<span class="p">);</span>
+    i<span class="p">++;</span>
+<span class="p">}</span> <span class="kw">while</span> <span class="p">(</span>i <span class="p">&lt;=</span> <span class="nm">4</span><span class="p">);</span>   <span class="cm">// ← semicolon required!</span>
+<span class="cm">// Output: hi 5  (printed once even though 5 <= 4 is false!)</span></pre></div>
+
+  <div class="co warn">
+    <div class="t">Don't Forget the Semicolon!</div>
+    <div class="b">Unlike <code>while</code>, the <code>do-while</code> ends with <code>while(condition);</code> — note the <strong>semicolon</strong> after the closing parenthesis. This is easy to forget.</div>
+  </div>
+</div>
+
+<!-- ══ 22 ══ -->
+<div class="section">
+  <div class="section-label">Section 22</div>
+  <h2>For Loop — The Workhorse 🐴</h2>
+
+  <p>The most-used loop. Combines initialization, condition, and increment into one compact line.</p>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>for loop anatomy</span></div>
+<pre><span class="cm">//      init;     condition;  increment</span>
+<span class="kw">for</span> <span class="p">(</span><span class="ty">int</span> i <span class="p">=</span> <span class="nm">1</span><span class="p">;</span>  i <span class="p">&lt;=</span> <span class="nm">4</span><span class="p">;</span>     i<span class="p">++)</span> <span class="p">{</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"hi "</span> <span class="p">+</span> i<span class="p">);</span>
+<span class="p">}</span>
+<span class="cm">// Output: hi 1, hi 2, hi 3, hi 4</span></pre></div>
+
+  <h3>Execution Order</h3>
+  <ol class="steps">
+    <li><strong>Init</strong> runs <strong>once</strong> at the very start (<code>int i = 1</code>)</li>
+    <li><strong>Condition</strong> is checked. If true → execute block. If false → exit loop.</li>
+    <li><strong>Block</strong> executes (your code inside <code>{ }</code>)</li>
+    <li><strong>Increment</strong> runs (<code>i++</code>)</li>
+    <li>Go back to step 2. Repeat.</li>
+  </ol>
+
+  <h3>Starting from Zero — The Common Pattern</h3>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>zero-indexed loop</span></div>
+<pre><span class="cm">// Print 4 times, starting from 0</span>
+<span class="kw">for</span> <span class="p">(</span><span class="ty">int</span> i <span class="p">=</span> <span class="nm">0</span><span class="p">;</span> i <span class="p">&lt;</span> <span class="nm">4</span><span class="p">;</span> i<span class="p">++)</span> <span class="p">{</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>i<span class="p">);</span>  <span class="cm">// 0, 1, 2, 3 (4 iterations)</span>
+<span class="p">}</span>
+<span class="cm">// Note: i < 4 (not <=) when starting from 0!</span></pre></div>
+
+  <div class="co brain">
+    <div class="t">Zero-Based Counting</div>
+    <div class="b">Computers count from 0, not 1. When you start at 0 and want N iterations, use <code>i &lt; N</code> (not <code>i &lt;= N</code>). This pattern appears everywhere — arrays, strings, collections. Get used to it now.</div>
+  </div>
+
+  <h3>Decrementing Loop</h3>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>countdown</span></div>
+<pre><span class="kw">for</span> <span class="p">(</span><span class="ty">int</span> i <span class="p">=</span> <span class="nm">4</span><span class="p">;</span> i <span class="p">>=</span> <span class="nm">1</span><span class="p">;</span> i<span class="p">--)</span> <span class="p">{</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span><span class="st">"hi "</span> <span class="p">+</span> i<span class="p">);</span>
+<span class="p">}</span>
+<span class="cm">// Output: hi 4, hi 3, hi 2, hi 1</span></pre></div>
+
+  <h3>Skipping Parts of for</h3>
+  <p>Any part of the for loop can be empty — just keep the semicolons:</p>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>init moved outside</span></div>
+<pre><span class="ty">int</span> i <span class="p">=</span> <span class="nm">1</span><span class="p">;</span>
+<span class="kw">for</span> <span class="p">(;</span> i <span class="p">&lt;=</span> <span class="nm">4</span><span class="p">;</span> i<span class="p">++)</span> <span class="p">{</span>   <span class="cm">// init skipped, just two semicolons</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>i<span class="p">);</span>
+<span class="p">}</span></pre></div>
+</div>
+
+<!-- ══ 23 ══ -->
+<div class="section">
+  <div class="section-label">Section 23</div>
+  <h2>Nested Loops 🔁🔁</h2>
+
+  <p>A loop inside a loop. The inner loop completes <strong>all its iterations</strong> for each single iteration of the outer loop.</p>
+
+  <div class="cb"><div class="ch"><span class="l">java</span><span>nested for loop — 5-day work calendar</span></div>
+<pre><span class="kw">for</span> <span class="p">(</span><span class="ty">int</span> i <span class="p">=</span> <span class="nm">1</span><span class="p">;</span> i <span class="p">&lt;=</span> <span class="nm">5</span><span class="p">;</span> i<span class="p">++)</span> <span class="p">{</span>           <span class="cm">// outer: days</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">print</span><span class="p">(</span><span class="st">"Day "</span> <span class="p">+</span> i <span class="p">+</span> <span class="st">": "</span><span class="p">);</span>
+    <span class="kw">for</span> <span class="p">(</span><span class="ty">int</span> j <span class="p">=</span> <span class="nm">1</span><span class="p">;</span> j <span class="p">&lt;=</span> <span class="nm">9</span><span class="p">;</span> j<span class="p">++)</span> <span class="p">{</span>       <span class="cm">// inner: hours</span>
+        System<span class="p">.</span>out<span class="p">.</span><span class="fn">print</span><span class="p">(</span><span class="st">"\t"</span> <span class="p">+</span> <span class="p">(</span>j<span class="p">+</span><span class="nm">8</span><span class="p">)</span> <span class="p">+</span> <span class="st">"-"</span> <span class="p">+</span> <span class="p">(</span>j<span class="p">+</span><span class="nm">9</span><span class="p">));</span>
+    <span class="p">}</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">();</span>   <span class="cm">// new line after each day</span>
+<span class="p">}</span></pre></div>
+
+  <div class="co coffee">
+    <div class="t">The Clock Analogy</div>
+    <div class="b">Think of days as the outer loop (Mon, Tue, Wed…) and hours as the inner loop (9, 10, 11…). Each day, the clock resets to 9 and counts through the hours. When the hours are done, the day increments and the clock resets again. That's exactly how nested loops work.</div>
+  </div>
+
+  <div class="co warn">
+    <div class="t">String + Number Concatenation Trap</div>
+    <div class="b">When you write <code>"text" + j + 8</code>, Java concatenates left-to-right: it joins "text" with j first (making a string), then joins 8 — so <code>j + 8</code> is never added as numbers! Fix: use parentheses to force arithmetic first: <code>"text" + (j + 8)</code>.</div>
+  </div>
+</div>
+
+<!-- ══ 24 ══ -->
+<div class="section">
+  <div class="section-label">Section 24</div>
+  <h2>Which Loop to Use When? 🤔</h2>
+
+  <div class="cg">
+    <div class="cc">
+      <div class="e">🔢</div>
+      <div class="cl">for loop</div>
+      <div class="cd">You know the count (1 to 100, arrays, patterns)</div>
+    </div>
+    <div class="cc">
+      <div class="e">📄</div>
+      <div class="cl">while loop</div>
+      <div class="cd">Unknown count — files, network, user input, databases</div>
+    </div>
+    <div class="cc">
+      <div class="e">🔂</div>
+      <div class="cl">do-while</div>
+      <div class="cd">Must execute at least once — menus, retry prompts</div>
+    </div>
+  </div>
+
+  <div class="co brain">
+    <div class="t">Practical Reality</div>
+    <div class="b">In real-world projects, <code>for</code> is used ~80% of the time. <code>while</code> handles file/database/network reads. <code>do-while</code> is rare — maybe a menu that shows at least once. All three can technically do the same thing, but choosing the right one makes your code's <em>intent</em> clearer to other developers.</div>
+  </div>
+</div>
+
+<!-- ══ 25 ══ -->
+<div class="section">
+  <div class="section-label">Section 25</div>
+  <h2>Debug Mode in VS Code 🐛</h2>
+
+  <p>Debug mode lets you execute code <strong>one line at a time</strong> and watch variables change in real-time. It's the single most useful skill for understanding how loops and conditions actually work.</p>
+
+  <ol class="steps">
+    <li>Click on the <strong>line number</strong> in the gutter to set a <strong>breakpoint</strong> (red dot appears)</li>
+    <li>Go to <strong>Run → Start Debugging</strong> (or press F5)</li>
+    <li>Execution pauses at your breakpoint</li>
+    <li>Use <strong>Step Over</strong> (F10) to execute one line and move to the next</li>
+    <li>Use <strong>Step Into</strong> (F11) to dive inside a method call</li>
+    <li>Watch the <strong>Variables panel</strong> on the left — see values change live!</li>
+  </ol>
+
+  <div class="co tip">
+    <div class="t">When Confused by a Loop, Debug It!</div>
+    <div class="b">If you're not sure what value <code>i</code> has at iteration 3, or why a condition evaluated to false — don't guess. Set a breakpoint, step through, and <em>watch</em> the variables. It's like slow-motion replay for your code.</div>
+  </div>
+</div>
+
+<!-- ══ 26 ══ -->
+<div class="section">
+  <div class="section-label">Session Recap</div>
+  <h2>🎯 Grand Recap — Everything at a Glance</h2>
+
+  <div class="recap">
+    <h3>✅ Session 2 Complete Checklist</h3>
+    <ul>
+      <li>Binary literals use <code>0b</code> prefix (<code>0b101</code> = 5). Hex uses <code>0x</code> (<code>0x7E</code> = 126).</li>
+      <li>Underscores in numbers improve readability: <code>10_00_000</code>. Compiler ignores them.</li>
+      <li>Scientific notation: <code>12e10</code> = 12 × 10<sup>10</sup>.</li>
+      <li>Boolean only accepts <code>true</code>/<code>false</code>. No 0/1 like C!</li>
+      <li>Chars are internally numbers — you can do <code>c++</code> and 'a' becomes 'b'.</li>
+      <li><strong>Widening (conversion)</strong>: small → big = automatic, safe, no data loss.</li>
+      <li><strong>Narrowing (casting)</strong>: big → small = explicit <code>(type)</code>, possible data loss.</li>
+      <li>Float → int casting: decimal part is <strong>truncated</strong> (chopped), not rounded.</li>
+      <li>Overflow casting uses modulus: <code>257 % 256 = 1</code> for byte.</li>
+      <li>Can't cast between unrelated types (e.g., char → boolean).</li>
+      <li><strong>Type promotion</strong>: byte × byte → int (auto-promoted to avoid overflow).</li>
+      <li><code>java File.java</code> is a single-step run shortcut (Java 11+, learning only).</li>
+      <li>Arithmetic: <code>+</code> <code>-</code> <code>*</code> <code>/</code> (quotient) <code>%</code> (remainder).</li>
+      <li>Integer division drops the decimal: <code>7/5 = 1</code> not 1.4.</li>
+      <li>Compound: <code>+=</code> <code>-=</code> <code>*=</code> <code>/=</code> <code>%=</code> are shortcuts.</li>
+      <li><code>++</code> increments by 1, <code>--</code> decrements by 1.</li>
+      <li><strong>Post (num++)</strong>: fetch old value, then increment. <strong>Pre (++num)</strong>: increment, then fetch new value.</li>
+      <li>Difference only matters during assignment/expressions, not standalone.</li>
+      <li>Relational: <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code> <code>==</code> <code>!=</code> — always return boolean.</li>
+      <li><code>=</code> is assignment. <code>==</code> is comparison. Don't mix them!</li>
+      <li>Logical: <code>&amp;&amp;</code> (AND), <code>||</code> (OR), <code>!</code> (NOT). Learn the truth tables.</li>
+      <li>Short-circuit: <code>&amp;&amp;</code> skips second if first is false. <code>||</code> skips if first is true.</li>
+      <li>Always use short-circuit (<code>&amp;&amp;</code> / <code>||</code>) over single (<code>&amp;</code> / <code>|</code>).</li>
+      <li><code>if</code> checks condition → executes block if true. Curly brackets needed for 2+ statements.</li>
+      <li><code>else</code> catches everything that <code>if</code> didn't. Can't exist without <code>if</code>.</li>
+      <li><code>else if</code> adds more conditions. Optimize by eliminating already-checked variables.</li>
+      <li>Ternary: <code>condition ? valueIfTrue : valueIfFalse</code> — one-line if-else for assignments.</li>
+      <li><code>switch</code> matches a variable against exact values (cases). Cleaner than if-else-if chains.</li>
+      <li><strong>break</strong> is critical in switch — without it, all cases below the match execute (fall-through).</li>
+      <li><code>default</code> in switch = the catch-all when no case matches.</li>
+      <li><code>while</code>: check condition first, then execute. Might run 0 times.</li>
+      <li><code>do-while</code>: execute first, then check. Runs at least 1 time. Ends with <code>;</code></li>
+      <li><code>for</code>: init, condition, increment — all in one line. Most-used loop.</li>
+      <li>For loop execution: init (once) → condition → block → increment → repeat from condition.</li>
+      <li>Zero-based counting: start at 0, use <code>i &lt; N</code> for N iterations.</li>
+      <li>Any part of for-loop can be empty: <code>for (;condition;)</code> — just keep the semicolons.</li>
+      <li>Nested loops: inner completes all iterations per one outer iteration.</li>
+      <li>String + number = concatenation. Use parentheses to force arithmetic: <code>"text" + (j+8)</code>.</li>
+      <li><code>for</code> = known count. <code>while</code> = unknown count. <code>do-while</code> = at least once.</li>
+      <li>Debug mode: set breakpoints, step through, watch variables. Best learning tool available.</li>
+      <li>Comments: <code>//</code> for single line. Compiler ignores them.</li>
+    </ul>
+  </div>
+
+  <p style="text-align:center;margin-top:2.5rem;"><span class="hw">Session 2 conquered — you can now make Java think and repeat! 🔁</span></p>
+  <p style="text-align:center;color:var(--dim);font-size:.86rem;margin-top:.5rem;">Next up: Notes #3 → Object-Oriented Programming (OOP)</p>
+</div>
+
+</div>
+
+<div class="footer">
+  Complete Core Java Guide — Notes #2 &nbsp;|&nbsp; 26 Sections &nbsp;|&nbsp; Literals → Operators → Conditionals → Loops<br>
+  <span style="color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.72rem;margin-top:.5rem;display:inline-block;">Next up: Notes #3 → Classes, Objects & OOP Fundamentals</span>
+</div>
+
+</body>
+</html>
