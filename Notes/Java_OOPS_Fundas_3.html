@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete Core Java Guide — Notes #3</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0f0f0f;--sf:#1a1a1a;--sf2:#222;--ac:#2dd4bf;--ac2:#22d3ee;--ac3:#a78bfa;--ac4:#60a5fa;--ac5:#fbbf24;--red:#f87171;--pk:#f472b6;--tx:#e5e5e5;--dm:#9ca3af;--bd:#333;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--tx);font-family:'Bricolage Grotesque',sans-serif;line-height:1.75;overflow-x:hidden;}
+  .hero{min-height:56vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem;background:radial-gradient(ellipse at 25% 50%,rgba(45,212,191,.08) 0%,transparent 60%),radial-gradient(ellipse at 75% 60%,rgba(167,139,250,.06) 0%,transparent 60%);}
+  .hb{display:inline-block;background:var(--ac);color:#000;font-size:.73rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:.35rem 1rem;border-radius:2px;margin-bottom:1.5rem;}
+  .hero h1{font-size:clamp(2.2rem,5.5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1rem;background:linear-gradient(135deg,var(--ac),var(--ac2),var(--ac3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{font-size:1.1rem;color:var(--dm);max-width:650px;}
+  .mt{margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+  .mt span{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--dm);background:var(--sf);padding:.4rem 1rem;border-radius:4px;border:1px solid var(--bd);}
+  .toc{max-width:880px;margin:0 auto 4rem;padding:0 2rem;}
+  .toc h2{font-size:1.3rem;color:var(--ac);margin-bottom:1rem;}
+  .tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.45rem;}
+  .ti{background:var(--sf);border:1px solid var(--bd);border-left:3px solid var(--ac);padding:.6rem 1rem;border-radius:4px;font-size:.84rem;transition:border-color .2s;}
+  .ti:hover{border-left-color:var(--ac3);}
+  .ti .n{font-family:'JetBrains Mono',monospace;color:var(--ac);font-size:.68rem;margin-right:.5rem;}
+  .cx{max-width:880px;margin:0 auto;padding:0 2rem 6rem;}
+  .s{margin-bottom:4.2rem;}
+  .sl{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--ac);margin-bottom:.45rem;}
+  .s h2{font-size:1.85rem;font-weight:800;margin-bottom:1.3rem;line-height:1.2;}
+  .s h3{font-size:1.18rem;font-weight:600;margin:1.8rem 0 .65rem;color:var(--ac3);}
+  .s h4{font-size:1rem;font-weight:600;margin:1.3rem 0 .5rem;color:var(--ac4);}
+  .s p,.s>li{margin-bottom:.8rem;}
+  .co{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:1.15rem 1.35rem;margin:1.3rem 0;position:relative;}
+  .co::before{position:absolute;top:-10px;left:16px;font-size:1.15rem;}
+  .co.tip{border-left:3px solid var(--ac);}.co.tip::before{content:"💡";}
+  .co.warn{border-left:3px solid var(--ac5);}.co.warn::before{content:"⚠️";}
+  .co.fun{border-left:3px solid var(--ac3);}.co.fun::before{content:"🎉";}
+  .co.brain{border-left:3px solid var(--ac4);}.co.brain::before{content:"🧠";}
+  .co.coffee{border-left:3px solid var(--pk);}.co.coffee::before{content:"☕";}
+  .co.err{border-left:3px solid var(--red);}.co.err::before{content:"❌";}
+  .co strong{color:var(--ac5);}
+  .co .t{font-weight:700;margin-bottom:.3rem;font-size:.92rem;}
+  .co .b{font-size:.87rem;color:var(--dm);line-height:1.65;}
+  .hw{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--ac);display:inline-block;}
+  .cb{background:#111;border:1px solid var(--bd);border-radius:6px;overflow:hidden;margin:1rem 0;}
+  .ch{background:var(--sf2);padding:.5rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.69rem;color:var(--dm);display:flex;justify-content:space-between;border-bottom:1px solid var(--bd);}
+  .ch .l{color:var(--ac);font-weight:600;}
+  pre{padding:1.15rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;}
+  .kw{color:#c084fc;}.ty{color:#60a5fa;}.st{color:#34d399;}.cm{color:#6b7280;font-style:italic;}.nm{color:#fb923c;}.fn{color:#fbbf24;}.p{color:#9ca3af;}
+  .dia{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:1.8rem;margin:1.8rem 0;overflow-x:auto;}
+  .dia-t{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--ac);margin-bottom:1.3rem;text-align:center;}
+  .svg{display:block;margin:0 auto;max-width:100%;}
+  .tb{width:100%;border-collapse:collapse;margin:1.3rem 0;font-size:.84rem;}
+  .tb th{background:var(--sf2);color:var(--ac);font-family:'JetBrains Mono',monospace;font-size:.71rem;letter-spacing:1px;text-transform:uppercase;text-align:left;padding:.65rem 1rem;border-bottom:2px solid var(--ac);}
+  .tb td{padding:.55rem 1rem;border-bottom:1px solid var(--bd);color:var(--dm);}
+  .tb tr:hover td{background:var(--sf);color:var(--tx);}
+  .tb .tn{font-family:'JetBrains Mono',monospace;color:var(--ac4);font-weight:600;}
+  .vg{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.3rem 0;}
+  .vc{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:1.15rem;}
+  .vc h4{font-size:.87rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem;}
+  .vc ul{list-style:none;font-size:.83rem;color:var(--dm);}
+  .vc ul li{padding:.2rem 0 .2rem 1rem;position:relative;}
+  .vc ul li::before{content:"→";position:absolute;left:0;color:var(--ac);}
+  .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:.85rem;margin:1.3rem 0;}
+  .cc{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:.85rem;text-align:center;}
+  .cc .e{font-size:1.5rem;margin-bottom:.35rem;}
+  .cc .cl{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--ac4);font-weight:600;}
+  .cc .cd{font-size:.74rem;color:var(--dm);margin-top:.2rem;}
+  .steps{counter-reset:step;list-style:none;margin:1rem 0;}
+  .steps li{counter-increment:step;position:relative;padding:.5rem 0 .5rem 2.5rem;font-size:.88rem;}
+  .steps li::before{content:counter(step);position:absolute;left:0;top:.45rem;width:1.55rem;height:1.55rem;border-radius:50%;background:var(--ac);color:#000;font-weight:800;font-size:.72rem;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;}
+  .recap{background:linear-gradient(135deg,rgba(45,212,191,.06),rgba(167,139,250,.06));border:1px dashed var(--ac);border-radius:8px;padding:1.4rem 1.8rem;margin:2rem 0;}
+  .recap h3{color:var(--ac)!important;margin-top:0!important;font-size:1.08rem!important;}
+  .recap ul{list-style:none;margin-top:.65rem;}
+  .recap ul li{padding:.25rem 0 .25rem 1.5rem;font-size:.85rem;color:var(--dm);position:relative;}
+  .recap ul li::before{content:"✓";position:absolute;left:0;color:var(--ac);font-weight:700;}
+  .cr{display:grid;grid-template-columns:1fr auto 1fr;gap:.7rem;align-items:center;margin:1rem 0;}
+  .crb{background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:1rem;font-size:.85rem;}
+  .crv{font-family:'Caveat',cursive;font-size:1.35rem;color:var(--red);font-weight:700;text-align:center;}
+  .footer{text-align:center;padding:3rem 2rem;border-top:1px solid var(--bd);color:var(--dm);font-size:.78rem;}
+  @media(max-width:640px){.vg,.cr{grid-template-columns:1fr;}.crv{text-align:center;}.hero h1{font-size:1.9rem;}.s h2{font-size:1.4rem;}pre{font-size:.72rem;padding:.9rem;}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hb">Notes #3 — The Object World</div>
+  <h1>OOP, Arrays, Strings & Encapsulation</h1>
+  <p>From "everything is an object" to stack vs heap memory, arrays, string immutability, and your first OOP principle.</p>
+  <div class="mt">
+    <span>📅 Session 3</span>
+    <span>🧱 Classes & Objects</span>
+    <span>📦 Arrays (1D, 2D, 3D, Jagged)</span>
+    <span>🔤 String & StringBuffer</span>
+    <span>🔒 Encapsulation</span>
+  </div>
+</div>
+
+<div class="toc">
+  <h2>📑 What's Inside</h2>
+  <div class="tg">
+    <div class="ti"><span class="n">01</span>OOP — Everything is an Object</div>
+    <div class="ti"><span class="n">02</span>Class = Blueprint, Object = Instance</div>
+    <div class="ti"><span class="n">03</span>Creating Your First Class & Object</div>
+    <div class="ti"><span class="n">04</span>Methods — Defining Behavior</div>
+    <div class="ti"><span class="n">05</span>Return Types & Parameters</div>
+    <div class="ti"><span class="n">06</span>The <code>return</code> Keyword</div>
+    <div class="ti"><span class="n">07</span>Method Overloading</div>
+    <div class="ti"><span class="n">08</span>JVM Memory: Stack vs Heap</div>
+    <div class="ti"><span class="n">09</span>Local vs Instance Variables</div>
+    <div class="ti"><span class="n">10</span>Objects in Heap & References in Stack</div>
+    <div class="ti"><span class="n">11</span>Multiple Objects, Independent State</div>
+    <div class="ti"><span class="n">12</span>Why Arrays? The Problem with Many Variables</div>
+    <div class="ti"><span class="n">13</span>Creating & Using Arrays</div>
+    <div class="ti"><span class="n">14</span>Array Indexing (Starts at 0!)</div>
+    <div class="ti"><span class="n">15</span>Looping Through Arrays</div>
+    <div class="ti"><span class="n">16</span>Multi-Dimensional Arrays (2D)</div>
+    <div class="ti"><span class="n">17</span>3D Arrays & Jagged Arrays</div>
+    <div class="ti"><span class="n">18</span>Array of Objects</div>
+    <div class="ti"><span class="n">19</span>Enhanced For Loop (for-each)</div>
+    <div class="ti"><span class="n">20</span>Array Drawbacks</div>
+    <div class="ti"><span class="n">21</span>Strings — Not a Primitive!</div>
+    <div class="ti"><span class="n">22</span>String Methods (charAt, concat, +)</div>
+    <div class="ti"><span class="n">23</span>String Immutability & String Constant Pool</div>
+    <div class="ti"><span class="n">24</span>Mutable Strings: StringBuffer & StringBuilder</div>
+    <div class="ti"><span class="n">25</span>Encapsulation — Making Fields Private</div>
+    <div class="ti"><span class="n">26</span>Getters — Controlled Access</div>
+    <div class="ti"><span class="n">27</span>Grand Recap & Checklist</div>
+  </div>
+</div>
+
+<div class="cx">
+
+<!-- 01 -->
+<div class="s">
+  <div class="sl">Section 01</div>
+  <h2>OOP — Everything is an Object 🌍</h2>
+  <p>In the real world, everything around you is an <strong>object</strong> — a pen, a phone, a mouse, a table, even <em>you</em>. Every object has two things:</p>
+  <div class="vg">
+    <div class="vc"><h4 style="color:var(--ac);">📋 Properties (what it knows)</h4><ul><li>Pen: color, brand, height</li><li>Human: name, age, favourite actor</li><li>Phone: model, storage, battery</li></ul></div>
+    <div class="vc"><h4 style="color:var(--ac3);">⚡ Behavior (what it does)</h4><ul><li>Pen: writes</li><li>Human: talks, walks, codes</li><li>Phone: calls, takes photos</li></ul></div>
+  </div>
+  <p>Java is <strong>Object-Oriented Programming (OOP)</strong> — everything you build is modelled as objects with properties (variables) and behaviors (methods). From now on, think in objects: "I need an object that can add two numbers," not just "I need to add two numbers."</p>
+</div>
+
+<!-- 02 -->
+<div class="s">
+  <div class="sl">Section 02</div>
+  <h2>Class = Blueprint, Object = Instance 🏗️</h2>
+  <p>A <strong>class</strong> is a design/blueprint. An <strong>object</strong> is the actual thing built from that blueprint.</p>
+  <div class="dia">
+    <div class="dia-t">▸ Class → Object Analogy</div>
+    <svg class="svg" viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="a1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#2dd4bf"/></marker></defs>
+      <rect x="20" y="30" width="180" height="90" rx="8" fill="rgba(167,139,250,.08)" stroke="#a78bfa" stroke-width="2"/>
+      <text x="55" y="60" fill="#a78bfa" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700">Class</text>
+      <text x="40" y="82" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="10">Blueprint / Design</text>
+      <text x="40" y="100" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="10">Variables + Methods</text>
+      <line x1="205" y1="75" x2="280" y2="75" stroke="#2dd4bf" stroke-width="2" marker-end="url(#a1)"/>
+      <text x="215" y="65" fill="#2dd4bf" font-family="JetBrains Mono,monospace" font-size="9" font-weight="600">new keyword</text>
+      <rect x="285" y="15" width="170" height="55" rx="6" fill="rgba(45,212,191,.08)" stroke="#2dd4bf" stroke-width="1.5"/>
+      <text x="325" y="40" fill="#2dd4bf" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">Object 1</text>
+      <text x="305" y="58" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">age=25, name="Neo"</text>
+      <rect x="285" y="80" width="170" height="55" rx="6" fill="rgba(45,212,191,.08)" stroke="#2dd4bf" stroke-width="1.5"/>
+      <text x="325" y="105" fill="#2dd4bf" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">Object 2</text>
+      <text x="300" y="123" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">age=30, name="Naveen"</text>
+      <text x="490" y="55" fill="#9ca3af" font-family="Bricolage Grotesque,sans-serif" font-size="11">Same blueprint,</text>
+      <text x="490" y="72" fill="#9ca3af" font-family="Bricolage Grotesque,sans-serif" font-size="11">different data.</text>
+      <text x="490" y="100" fill="#fbbf24" font-family="Bricolage Grotesque,sans-serif" font-size="11" font-weight="600">JVM creates objects</text>
+      <text x="490" y="117" fill="#fbbf24" font-family="Bricolage Grotesque,sans-serif" font-size="11" font-weight="600">in Heap memory.</text>
+    </svg>
+  </div>
+  <div class="co coffee"><div class="t">Apple's Lesson</div><div class="b">Apple says "Designed in California, Assembled in China." Your job is <strong>designing</strong> (writing the class). JVM does the <strong>assembling</strong> (creating the object in memory).</div></div>
+</div>
+
+<!-- 03 -->
+<div class="s">
+  <div class="sl">Section 03</div>
+  <h2>Creating Your First Class & Object 🚀</h2>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>Calculator class + Demo using it</span></div>
+<pre><span class="cm">// Class = Blueprint</span>
+<span class="kw">class</span> <span class="ty">Calculator</span> <span class="p">{</span>
+    <span class="ty">int</span> num<span class="p">;</span>                          <span class="cm">// instance variable</span>
+
+    <span class="kw">public</span> <span class="ty">int</span> <span class="fn">add</span><span class="p">(</span><span class="ty">int</span> n1<span class="p">,</span> <span class="ty">int</span> n2<span class="p">)</span> <span class="p">{</span>  <span class="cm">// method</span>
+        <span class="kw">return</span> n1 <span class="p">+</span> n2<span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kw">class</span> <span class="ty">Demo</span> <span class="p">{</span>
+    <span class="kw">public static void</span> <span class="fn">main</span><span class="p">(</span><span class="ty">String</span><span class="p">[]</span> args<span class="p">)</span> <span class="p">{</span>
+        <span class="cm">// Object = Instance built from blueprint</span>
+        <span class="ty">Calculator</span> calc <span class="p">=</span> <span class="kw">new</span> <span class="ty">Calculator</span><span class="p">();</span>
+
+        <span class="ty">int</span> r1 <span class="p">=</span> calc<span class="p">.</span><span class="fn">add</span><span class="p">(</span><span class="nm">3</span><span class="p">,</span> <span class="nm">4</span><span class="p">);</span>  <span class="cm">// calling the method</span>
+        System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>r1<span class="p">);</span>      <span class="cm">// Output: 7</span>
+    <span class="p">}</span>
+<span class="p">}</span></pre></div>
+  <ol class="steps">
+    <li><code>Calculator</code> is the class (blueprint) — has variable <code>num</code> and method <code>add</code>.</li>
+    <li><code>new Calculator()</code> tells JVM to create an object in heap memory.</li>
+    <li><code>calc</code> is the <strong>reference variable</strong> — it holds the object's address, not the object itself.</li>
+    <li><code>calc.add(3, 4)</code> uses the reference to call the method on the object.</li>
+  </ol>
+  <div class="co warn"><div class="t">You Can't Call Methods Without an Object!</div><div class="b">Just writing <code>add(3, 4)</code> in Demo won't work — Java says "cannot find symbol." The method <code>add</code> belongs to Calculator, not Demo. You need an <strong>object</strong> of Calculator to call it.</div></div>
+</div>
+
+<!-- 04-06 Methods -->
+<div class="s">
+  <div class="sl">Section 04–06</div>
+  <h2>Methods — Behavior, Returns & Parameters 🔧</h2>
+  <p>A method defines what an object <strong>does</strong>. Every method has: access modifier, return type, name, parameters, and body.</p>
+  <div class="dia">
+    <div class="dia-t">▸ Anatomy of a Method</div>
+    <svg class="svg" viewBox="0 0 700 100" xmlns="http://www.w3.org/2000/svg">
+      <text x="20" y="40" fill="#c084fc" font-family="JetBrains Mono,monospace" font-size="14">public</text>
+      <text x="110" y="40" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="14">int</text>
+      <text x="148" y="40" fill="#fbbf24" font-family="JetBrains Mono,monospace" font-size="14" font-weight="700">add</text>
+      <text x="186" y="40" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="14">(</text>
+      <text x="198" y="40" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="14">int</text>
+      <text x="230" y="40" fill="#e5e5e5" font-family="JetBrains Mono,monospace" font-size="14">n1,</text>
+      <text x="275" y="40" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="14">int</text>
+      <text x="307" y="40" fill="#e5e5e5" font-family="JetBrains Mono,monospace" font-size="14">n2</text>
+      <text x="335" y="40" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="14">) {</text>
+      <text x="375" y="40" fill="#34d399" font-family="JetBrains Mono,monospace" font-size="13">return</text>
+      <text x="445" y="40" fill="#e5e5e5" font-family="JetBrains Mono,monospace" font-size="14">n1+n2;</text>
+      <text x="520" y="40" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="14">}</text>
+      <line x1="50" y1="50" x2="50" y2="65" stroke="#c084fc" stroke-width="1"/>
+      <text x="15" y="80" fill="#c084fc" font-family="Bricolage Grotesque,sans-serif" font-size="9">access</text>
+      <line x1="120" y1="50" x2="120" y2="65" stroke="#60a5fa" stroke-width="1"/>
+      <text x="98" y="80" fill="#60a5fa" font-family="Bricolage Grotesque,sans-serif" font-size="9">return type</text>
+      <line x1="168" y1="50" x2="168" y2="65" stroke="#fbbf24" stroke-width="1"/>
+      <text x="148" y="80" fill="#fbbf24" font-family="Bricolage Grotesque,sans-serif" font-size="9">method name</text>
+      <line x1="265" y1="50" x2="265" y2="65" stroke="#e5e5e5" stroke-width="1"/>
+      <text x="233" y="80" fill="#e5e5e5" font-family="Bricolage Grotesque,sans-serif" font-size="9">parameters</text>
+      <line x1="410" y1="50" x2="410" y2="65" stroke="#34d399" stroke-width="1"/>
+      <text x="380" y="80" fill="#34d399" font-family="Bricolage Grotesque,sans-serif" font-size="9">return statement</text>
+    </svg>
+  </div>
+  <h3><code>void</code> vs returning a value</h3>
+  <div class="cr">
+    <div class="crb"><p style="margin:0;font-weight:700;color:var(--ac4);">void method</p><p style="margin:.2rem 0 0;font-size:.83rem;color:var(--dm);">Does something but returns <strong>nothing</strong>.<br><code>public void playMusic()</code></p></div>
+    <div class="crv">vs</div>
+    <div class="crb"><p style="margin:0;font-weight:700;color:var(--ac);">Returning method</p><p style="margin:.2rem 0 0;font-size:.83rem;color:var(--dm);">Performs something and <strong>gives back a value</strong>.<br><code>public String getPen(int cost)</code></p></div>
+  </div>
+  <div class="co tip"><div class="t">The <code>return</code> Keyword</div><div class="b"><code>return</code> does two things: (1) sends a value back to the caller, and (2) <strong>immediately exits</strong> the method. No code after <code>return</code> in the same block will execute. The return type in the method signature must match what you actually return.</div></div>
+</div>
+
+<!-- 07 -->
+<div class="s">
+  <div class="sl">Section 07</div>
+  <h2>Method Overloading 🔄</h2>
+  <p>Same method name, different parameters. Java tells them apart by the parameter list, not the return type.</p>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>three overloaded add methods</span></div>
+<pre><span class="kw">class</span> <span class="ty">Calculator</span> <span class="p">{</span>
+    <span class="kw">public</span> <span class="ty">int</span> <span class="fn">add</span><span class="p">(</span><span class="ty">int</span> a<span class="p">,</span> <span class="ty">int</span> b<span class="p">)</span>                 <span class="p">{</span> <span class="kw">return</span> a<span class="p">+</span>b<span class="p">; }</span>         <span class="cm">// 2 ints</span>
+    <span class="kw">public</span> <span class="ty">int</span> <span class="fn">add</span><span class="p">(</span><span class="ty">int</span> a<span class="p">,</span> <span class="ty">int</span> b<span class="p">,</span> <span class="ty">int</span> c<span class="p">)</span>         <span class="p">{</span> <span class="kw">return</span> a<span class="p">+</span>b<span class="p">+</span>c<span class="p">; }</span>       <span class="cm">// 3 ints</span>
+    <span class="kw">public</span> <span class="ty">double</span> <span class="fn">add</span><span class="p">(</span><span class="ty">double</span> a<span class="p">,</span> <span class="ty">double</span> b<span class="p">)</span>      <span class="p">{</span> <span class="kw">return</span> a<span class="p">+</span>b<span class="p">; }</span>         <span class="cm">// 2 doubles</span>
+<span class="p">}</span></pre></div>
+  <div class="co brain"><div class="t">Overloading Rules</div><div class="b">Methods must differ in <strong>number</strong> or <strong>type</strong> of parameters. Return type alone is NOT enough to distinguish them. Same name + same parameters = "duplicate method" error. This is <strong>method overloading</strong> — a form of compile-time polymorphism.</div></div>
+</div>
+
+<!-- 08-10 JVM Memory -->
+<div class="s">
+  <div class="sl">Section 08–10</div>
+  <h2>JVM Memory: Stack vs Heap 🧠</h2>
+  <div class="dia">
+    <div class="dia-t">▸ Stack & Heap Memory Layout</div>
+    <svg class="svg" viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg">
+      <!-- Stack -->
+      <rect x="20" y="20" width="280" height="300" rx="10" fill="rgba(96,165,250,.05)" stroke="#60a5fa" stroke-width="2" stroke-dasharray="6 3"/>
+      <text x="100" y="48" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700">STACK MEMORY</text>
+      <text x="45" y="68" fill="#6b7280" font-family="JetBrains Mono,monospace" font-size="9">Local variables, method frames (LIFO)</text>
+      <!-- main stack -->
+      <rect x="40" y="82" width="240" height="100" rx="6" fill="rgba(167,139,250,.08)" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="55" y="102" fill="#a78bfa" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700">main() stack frame</text>
+      <text x="55" y="122" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">data = 10</text>
+      <text x="55" y="138" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">obj = 101 (address →)</text>
+      <text x="55" y="154" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">r1 = 7</text>
+      <text x="55" y="170" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">obj1 = 102 (address →)</text>
+      <!-- add stack -->
+      <rect x="40" y="192" width="240" height="70" rx="6" fill="rgba(45,212,191,.08)" stroke="#2dd4bf" stroke-width="1.5"/>
+      <text x="55" y="212" fill="#2dd4bf" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700">add() stack frame</text>
+      <text x="55" y="232" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">n1 = 3</text>
+      <text x="55" y="248" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">n2 = 4</text>
+      <text x="45" y="290" fill="#6b7280" font-family="Bricolage Grotesque,sans-serif" font-size="10">Each method gets its own stack</text>
+      <text x="45" y="306" fill="#6b7280" font-family="Bricolage Grotesque,sans-serif" font-size="10">frame. Destroyed when method ends.</text>
+      <!-- Heap -->
+      <rect x="380" y="20" width="320" height="300" rx="10" fill="rgba(45,212,191,.04)" stroke="#2dd4bf" stroke-width="2" stroke-dasharray="6 3"/>
+      <text x="480" y="48" fill="#2dd4bf" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700">HEAP MEMORY</text>
+      <text x="400" y="68" fill="#6b7280" font-family="JetBrains Mono,monospace" font-size="9">Objects, instance variables (shared, expandable)</text>
+      <!-- Object 1 -->
+      <rect x="400" y="82" width="140" height="90" rx="6" fill="rgba(251,191,36,.08)" stroke="#fbbf24" stroke-width="1.5"/>
+      <text x="415" y="102" fill="#fbbf24" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700">Calculator obj</text>
+      <text x="415" y="118" fill="#fbbf24" font-family="JetBrains Mono,monospace" font-size="9">addr: 101</text>
+      <text x="415" y="138" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">num = 5</text>
+      <text x="415" y="154" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">add() definition</text>
+      <!-- Object 2 -->
+      <rect x="555" y="82" width="130" height="90" rx="6" fill="rgba(251,191,36,.08)" stroke="#fbbf24" stroke-width="1.5"/>
+      <text x="570" y="102" fill="#fbbf24" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700">Calculator obj1</text>
+      <text x="570" y="118" fill="#fbbf24" font-family="JetBrains Mono,monospace" font-size="9">addr: 102</text>
+      <text x="570" y="138" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">num = 5</text>
+      <text x="570" y="154" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="9">add() definition</text>
+      <!-- Link arrows -->
+      <line x1="280" y1="138" x2="398" y2="120" stroke="#fbbf24" stroke-width="1" stroke-dasharray="3 2"/>
+      <line x1="280" y1="170" x2="553" y2="120" stroke="#fbbf24" stroke-width="1" stroke-dasharray="3 2"/>
+      <text x="420" y="210" fill="#f87171" font-family="Bricolage Grotesque,sans-serif" font-size="11" font-weight="600">Changing obj.num = 8</text>
+      <text x="420" y="228" fill="#f87171" font-family="Bricolage Grotesque,sans-serif" font-size="11" font-weight="600">does NOT affect obj1.num!</text>
+      <text x="420" y="250" fill="#9ca3af" font-family="Bricolage Grotesque,sans-serif" font-size="10">Different objects = independent state.</text>
+      <text x="420" y="270" fill="#9ca3af" font-family="Bricolage Grotesque,sans-serif" font-size="10">Like two phones — cracking one</text>
+      <text x="420" y="288" fill="#9ca3af" font-family="Bricolage Grotesque,sans-serif" font-size="10">screen doesn't crack the other.</text>
+    </svg>
+  </div>
+  <table class="tb">
+    <thead><tr><th>Stack</th><th>Heap</th></tr></thead>
+    <tbody>
+      <tr><td>Local variables & method frames</td><td>Objects & instance variables</td></tr>
+      <tr><td>LIFO (Last In, First Out)</td><td>No fixed ordering</td></tr>
+      <tr><td>Each method gets its own frame</td><td>Shared across all methods</td></tr>
+      <tr><td>Frame destroyed when method returns</td><td>Object removed by Garbage Collector</td></tr>
+      <tr><td>Holds primitive values & reference addresses</td><td>Holds actual object data</td></tr>
+    </tbody>
+  </table>
+  <div class="co brain"><div class="t">Instance vs Local Variables</div><div class="b"><strong>Local variables</strong> (declared inside a method) → stored in <strong>Stack</strong>. Destroyed when method ends.<br><strong>Instance variables</strong> (declared inside a class, outside methods) → stored in <strong>Heap</strong> (inside the object). Live as long as the object lives.</div></div>
+</div>
+
+<!-- 12-15 Arrays -->
+<div class="s">
+  <div class="sl">Section 12–15</div>
+  <h2>Arrays — Multiple Values, One Variable 📦</h2>
+  <p>Instead of creating 100 variables, create one array that holds 100 values.</p>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>creating arrays — two syntaxes</span></div>
+<pre><span class="cm">// Syntax 1: values known upfront</span>
+<span class="ty">int</span><span class="p">[]</span> nums <span class="p">=</span> <span class="p">{</span><span class="nm">3</span><span class="p">,</span> <span class="nm">7</span><span class="p">,</span> <span class="nm">2</span><span class="p">,</span> <span class="nm">4</span><span class="p">};</span>
+
+<span class="cm">// Syntax 2: size known, values set later (all default to 0)</span>
+<span class="ty">int</span><span class="p">[]</span> nums <span class="p">=</span> <span class="kw">new</span> <span class="ty">int</span><span class="p">[</span><span class="nm">4</span><span class="p">];</span>
+nums<span class="p">[</span><span class="nm">0</span><span class="p">]</span> <span class="p">=</span> <span class="nm">4</span><span class="p">;</span>  nums<span class="p">[</span><span class="nm">1</span><span class="p">]</span> <span class="p">=</span> <span class="nm">8</span><span class="p">;</span>  nums<span class="p">[</span><span class="nm">2</span><span class="p">]</span> <span class="p">=</span> <span class="nm">3</span><span class="p">;</span>  nums<span class="p">[</span><span class="nm">3</span><span class="p">]</span> <span class="p">=</span> <span class="nm">9</span><span class="p">;</span></pre></div>
+  <div class="co warn"><div class="t">Index Starts at 0!</div><div class="b">Array of size 4 has indices 0, 1, 2, 3 — NOT 1 to 4. Accessing <code>nums[4]</code> throws <code>ArrayIndexOutOfBoundsException</code>.</div></div>
+  <h3>Looping Through an Array</h3>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>for loop + .length</span></div>
+<pre><span class="kw">for</span> <span class="p">(</span><span class="ty">int</span> i <span class="p">=</span> <span class="nm">0</span><span class="p">;</span> i <span class="p"><</span> nums<span class="p">.</span>length<span class="p">;</span> i<span class="p">++)</span> <span class="p">{</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">print</span><span class="p">(</span>nums<span class="p">[</span>i<span class="p">]</span> <span class="p">+</span> <span class="st">" "</span><span class="p">);</span>
+<span class="p">}</span></pre></div>
+  <div class="co tip"><div class="t"><code>.length</code> — Your Safety Net</div><div class="b">Always use <code>nums.length</code> instead of hard-coding the size. It prevents <code>ArrayIndexOutOfBoundsException</code> if the array size changes later.</div></div>
+</div>
+
+<!-- 16-17 Multi-dimensional -->
+<div class="s">
+  <div class="sl">Section 16–17</div>
+  <h2>Multi-Dimensional & Jagged Arrays 🧊</h2>
+  <h3>2D Array = Array of Arrays</h3>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>2D array — 3 rows × 4 columns</span></div>
+<pre><span class="ty">int</span><span class="p">[][]</span> nums <span class="p">=</span> <span class="kw">new</span> <span class="ty">int</span><span class="p">[</span><span class="nm">3</span><span class="p">][</span><span class="nm">4</span><span class="p">];</span>  <span class="cm">// 3 rows, 4 cols</span>
+
+<span class="cm">// Print all values with nested loop</span>
+<span class="kw">for</span> <span class="p">(</span><span class="ty">int</span> i <span class="p">=</span> <span class="nm">0</span><span class="p">;</span> i <span class="p"><</span> <span class="nm">3</span><span class="p">;</span> i<span class="p">++)</span> <span class="p">{</span>
+    <span class="kw">for</span> <span class="p">(</span><span class="ty">int</span> j <span class="p">=</span> <span class="nm">0</span><span class="p">;</span> j <span class="p"><</span> <span class="nm">4</span><span class="p">;</span> j<span class="p">++)</span> <span class="p">{</span>
+        System<span class="p">.</span>out<span class="p">.</span><span class="fn">print</span><span class="p">(</span>nums<span class="p">[</span>i<span class="p">][</span>j<span class="p">]</span> <span class="p">+</span> <span class="st">" "</span><span class="p">);</span>
+    <span class="p">}</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">();</span>
+<span class="p">}</span></pre></div>
+  <h3>Jagged Array — Uneven Rows</h3>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>rows of different sizes</span></div>
+<pre><span class="ty">int</span><span class="p">[][]</span> nums <span class="p">=</span> <span class="kw">new</span> <span class="ty">int</span><span class="p">[</span><span class="nm">3</span><span class="p">][];</span>    <span class="cm">// 3 rows, columns TBD</span>
+nums<span class="p">[</span><span class="nm">0</span><span class="p">]</span> <span class="p">=</span> <span class="kw">new</span> <span class="ty">int</span><span class="p">[</span><span class="nm">3</span><span class="p">];</span>             <span class="cm">// row 0 has 3 cols</span>
+nums<span class="p">[</span><span class="nm">1</span><span class="p">]</span> <span class="p">=</span> <span class="kw">new</span> <span class="ty">int</span><span class="p">[</span><span class="nm">4</span><span class="p">];</span>             <span class="cm">// row 1 has 4 cols</span>
+nums<span class="p">[</span><span class="nm">2</span><span class="p">]</span> <span class="p">=</span> <span class="kw">new</span> <span class="ty">int</span><span class="p">[</span><span class="nm">2</span><span class="p">];</span>             <span class="cm">// row 2 has 2 cols</span></pre></div>
+  <p>3D arrays: add one more <code>[]</code> and one more nested loop. Each extra dimension = one more loop.</p>
+  <p><code>Math.random()</code> returns a double between 0.0 and 1.0. Multiply by 10 (or 100) and cast to int for random integers: <code>(int)(Math.random() * 10)</code>.</p>
+</div>
+
+<!-- 18-19 Array of Objects + Enhanced For -->
+<div class="s">
+  <div class="sl">Section 18–19</div>
+  <h2>Array of Objects & Enhanced For Loop 🔁</h2>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>array of Student objects</span></div>
+<pre><span class="ty">Student</span><span class="p">[]</span> students <span class="p">=</span> <span class="kw">new</span> <span class="ty">Student</span><span class="p">[</span><span class="nm">3</span><span class="p">];</span>  <span class="cm">// creates array, NOT 3 objects!</span>
+students<span class="p">[</span><span class="nm">0</span><span class="p">]</span> <span class="p">=</span> s1<span class="p">;</span>  students<span class="p">[</span><span class="nm">1</span><span class="p">]</span> <span class="p">=</span> s2<span class="p">;</span>  students<span class="p">[</span><span class="nm">2</span><span class="p">]</span> <span class="p">=</span> s3<span class="p">;</span></pre></div>
+  <div class="co warn"><div class="t"><code>new Student[3]</code> ≠ 3 Objects!</div><div class="b">This creates an array that <em>can hold</em> 3 Student references. It does NOT create the Student objects themselves. You must create them separately with <code>new Student()</code> and assign.</div></div>
+
+  <h3>Enhanced For Loop (for-each)</h3>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>no counter, no index, no exception</span></div>
+<pre><span class="cm">// Simple array</span>
+<span class="kw">for</span> <span class="p">(</span><span class="ty">int</span> n <span class="p">:</span> nums<span class="p">)</span> <span class="p">{</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">print</span><span class="p">(</span>n <span class="p">+</span> <span class="st">" "</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">// 2D array: outer gives rows, inner gives elements</span>
+<span class="kw">for</span> <span class="p">(</span><span class="ty">int</span><span class="p">[]</span> row <span class="p">:</span> nums<span class="p">)</span> <span class="p">{</span>
+    <span class="kw">for</span> <span class="p">(</span><span class="ty">int</span> m <span class="p">:</span> row<span class="p">)</span> <span class="p">{</span>
+        System<span class="p">.</span>out<span class="p">.</span><span class="fn">print</span><span class="p">(</span>m <span class="p">+</span> <span class="st">" "</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">// Array of objects</span>
+<span class="kw">for</span> <span class="p">(</span><span class="ty">Student</span> st <span class="p">:</span> students<span class="p">)</span> <span class="p">{</span>
+    System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>st<span class="p">.</span>name <span class="p">+</span> <span class="st">" : "</span> <span class="p">+</span> st<span class="p">.</span>marks<span class="p">);</span>
+<span class="p">}</span></pre></div>
+  <div class="co tip"><div class="t">Why "Enhanced" For Loop?</div><div class="b">No counter, no <code>.length</code>, no index — just "give me each element one by one." Eliminates <code>ArrayIndexOutOfBoundsException</code>. Use it whenever you don't need the index number. Officially called "enhanced for loop" (not for-each — Java 8 introduced a separate <code>.forEach()</code> method).</div></div>
+</div>
+
+<!-- 20 Drawbacks -->
+<div class="s">
+  <div class="sl">Section 20</div>
+  <h2>Array Drawbacks ⚠️</h2>
+  <div class="cg">
+    <div class="cc"><div class="e">📏</div><div class="cl">Fixed Size</div><div class="cd">Once created, you can't grow or shrink it.</div></div>
+    <div class="cc"><div class="e">🐌</div><div class="cl">Slow Insert/Search</div><div class="cd">Inserting mid-array or searching requires traversal.</div></div>
+    <div class="cc"><div class="e">🔒</div><div class="cl">Single Type Only</div><div class="cd">Can't mix int and String in one array.</div></div>
+    <div class="cc"><div class="e">📦</div><div class="cl">Contiguous Memory</div><div class="cd">Must occupy consecutive memory slots.</div></div>
+  </div>
+  <p>These drawbacks are why Java has <strong>Collections</strong> (ArrayList, HashMap, etc.) — covered later in the course.</p>
+</div>
+
+<!-- 21-22 Strings -->
+<div class="s">
+  <div class="sl">Section 21–22</div>
+  <h2>Strings — Not a Primitive! 🔤</h2>
+  <p>String starts with a <strong>capital S</strong> — it's a <strong>class</strong>, not a primitive type. But Java gives it special treatment so you can use it like a primitive:</p>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>two ways to create a string</span></div>
+<pre><span class="cm">// Way 1: String literal (most common, uses String Constant Pool)</span>
+<span class="ty">String</span> name <span class="p">=</span> <span class="st">"Naveen"</span><span class="p">;</span>
+
+<span class="cm">// Way 2: new keyword (creates object in regular heap)</span>
+<span class="ty">String</span> name <span class="p">=</span> <span class="kw">new</span> <span class="ty">String</span><span class="p">(</span><span class="st">"Naveen"</span><span class="p">);</span></pre></div>
+  <h3>Useful String Methods</h3>
+  <table class="tb"><thead><tr><th>Method</th><th>What It Does</th><th>Example</th></tr></thead><tbody>
+    <tr><td class="tn">charAt(i)</td><td>Character at index i</td><td><code>"Naveen".charAt(1)</code> → <code>'a'</code></td></tr>
+    <tr><td class="tn">concat(s)</td><td>Joins two strings</td><td><code>"Nav".concat(" Reddy")</code></td></tr>
+    <tr><td class="tn">+ operator</td><td>Concatenation shortcut</td><td><code>"Hello " + name</code></td></tr>
+    <tr><td class="tn">length()</td><td>Number of characters</td><td><code>"Naveen".length()</code> → <code>6</code></td></tr>
+    <tr><td class="tn">hashCode()</td><td>Hash value of string</td><td>Used internally for comparisons</td></tr>
+  </tbody></table>
+  <div class="co tip"><div class="t">+ is the Only Operator That Works with Strings</div><div class="b">No <code>-</code>, no <code>*</code>, no <code>/</code>. Only <code>+</code> — and it concatenates (joins), not adds.</div></div>
+</div>
+
+<!-- 23 Immutability -->
+<div class="s">
+  <div class="sl">Section 23</div>
+  <h2>String Immutability & String Constant Pool 🔒</h2>
+  <p>This is one of the most important concepts in Java. <strong>Strings are immutable</strong> — once created, their data cannot be changed.</p>
+  <div class="dia">
+    <div class="dia-t">▸ String Constant Pool in Heap</div>
+    <svg class="svg" viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="10" width="200" height="260" rx="8" fill="rgba(96,165,250,.05)" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <text x="65" y="35" fill="#60a5fa" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">STACK</text>
+      <text x="40" y="65" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="10">name → 101</text>
+      <text x="40" y="90" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="10">s1 → 103</text>
+      <text x="40" y="115" fill="#9ca3af" font-family="JetBrains Mono,monospace" font-size="10">s2 → 103</text>
+      <text x="40" y="150" fill="#fbbf24" font-family="JetBrains Mono,monospace" font-size="9">s1 == s2 → true!</text>
+      <text x="40" y="170" fill="#fbbf24" font-family="Bricolage Grotesque,sans-serif" font-size="9">Same address = same object</text>
+      <text x="40" y="200" fill="#f87171" font-family="JetBrains Mono,monospace" font-size="9">name = name + " Reddy"</text>
+      <text x="40" y="220" fill="#f87171" font-family="Bricolage Grotesque,sans-serif" font-size="9">Does NOT modify "naveen"</text>
+      <text x="40" y="240" fill="#f87171" font-family="Bricolage Grotesque,sans-serif" font-size="9">Creates NEW object "naveen Reddy"</text>
+      <text x="40" y="258" fill="#f87171" font-family="Bricolage Grotesque,sans-serif" font-size="9">name now points to 105</text>
+      <!-- Heap -->
+      <rect x="280" y="10" width="400" height="260" rx="8" fill="rgba(45,212,191,.04)" stroke="#2dd4bf" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <text x="400" y="35" fill="#2dd4bf" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">HEAP — String Constant Pool</text>
+      <rect x="310" y="50" width="140" height="40" rx="4" fill="rgba(251,191,36,.1)" stroke="#fbbf24" stroke-width="1.5"/>
+      <text x="325" y="67" fill="#fbbf24" font-family="JetBrains Mono,monospace" font-size="10">"naveen" @101</text>
+      <text x="325" y="82" fill="#6b7280" font-family="JetBrains Mono,monospace" font-size="8">← old 'name' pointed here</text>
+      <rect x="310" y="110" width="140" height="40" rx="4" fill="rgba(167,139,250,.1)" stroke="#a78bfa" stroke-width="1.5"/>
+      <text x="325" y="127" fill="#a78bfa" font-family="JetBrains Mono,monospace" font-size="10">"Naveen" @103</text>
+      <text x="325" y="142" fill="#6b7280" font-family="JetBrains Mono,monospace" font-size="8">← s1 AND s2 share this!</text>
+      <rect x="310" y="170" width="180" height="40" rx="4" fill="rgba(244,114,182,.1)" stroke="#f472b6" stroke-width="1.5"/>
+      <text x="320" y="187" fill="#f472b6" font-family="JetBrains Mono,monospace" font-size="10">"naveen Reddy" @105</text>
+      <text x="320" y="202" fill="#6b7280" font-family="JetBrains Mono,monospace" font-size="8">← NEW object! name now here</text>
+      <text x="310" y="240" fill="#2dd4bf" font-family="Bricolage Grotesque,sans-serif" font-size="10" font-weight="600">Same data = reused (no duplicates)</text>
+      <text x="310" y="258" fill="#9ca3af" font-family="Bricolage Grotesque,sans-serif" font-size="10">"naveen" @101 → eligible for garbage collection</text>
+    </svg>
+  </div>
+  <div class="co brain"><div class="t">Key Takeaway</div><div class="b">When you write <code>name = name + " Reddy"</code>, you're NOT modifying the original "naveen" object. You're creating a <strong>brand new</strong> "naveen Reddy" object and changing the reference. The old "naveen" object still exists (unchanged) until garbage collected. That's <strong>immutability</strong>.</div></div>
+</div>
+
+<!-- 24 StringBuffer -->
+<div class="s">
+  <div class="sl">Section 24</div>
+  <h2>Mutable Strings: StringBuffer & StringBuilder 🔓</h2>
+  <p>If you need to change string data frequently (appending, inserting, deleting), use <strong>StringBuffer</strong> or <strong>StringBuilder</strong> — they're <strong>mutable</strong>.</p>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>StringBuffer in action</span></div>
+<pre><span class="ty">StringBuffer</span> sb <span class="p">=</span> <span class="kw">new</span> <span class="ty">StringBuffer</span><span class="p">(</span><span class="st">"Naveen"</span><span class="p">);</span>
+
+sb<span class="p">.</span><span class="fn">append</span><span class="p">(</span><span class="st">" Reddy"</span><span class="p">);</span>              <span class="cm">// "Naveen Reddy"</span>
+sb<span class="p">.</span><span class="fn">insert</span><span class="p">(</span><span class="nm">0</span><span class="p">,</span> <span class="st">"Java "</span><span class="p">);</span>             <span class="cm">// "Java Naveen Reddy"</span>
+sb<span class="p">.</span><span class="fn">deleteCharAt</span><span class="p">(</span><span class="nm">2</span><span class="p">);</span>                <span class="cm">// removes char at index 2</span>
+<span class="ty">String</span> str <span class="p">=</span> sb<span class="p">.</span><span class="fn">toString</span><span class="p">();</span>       <span class="cm">// convert back to String</span>
+
+System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>sb<span class="p">.</span><span class="fn">capacity</span><span class="p">());</span> <span class="cm">// 16 + initial string length</span>
+System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>sb<span class="p">.</span><span class="fn">length</span><span class="p">());</span>   <span class="cm">// actual character count</span></pre></div>
+  <div class="cr">
+    <div class="crb"><p style="margin:0;font-weight:700;color:var(--ac4);">StringBuffer</p><p style="margin:.2rem 0 0;font-size:.83rem;color:var(--dm);"><strong>Thread-safe</strong> (synchronized). Slightly slower. Use in multi-threaded code.</p></div>
+    <div class="crv">vs</div>
+    <div class="crb"><p style="margin:0;font-weight:700;color:var(--ac);">StringBuilder</p><p style="margin:.2rem 0 0;font-size:.83rem;color:var(--dm);"><strong>NOT thread-safe</strong>. Faster. Use in single-threaded code (most cases).</p></div>
+  </div>
+  <div class="co tip"><div class="t">Capacity vs Length</div><div class="b"><strong>Length</strong> = actual number of characters stored. <strong>Capacity</strong> = total buffer space (length + 16 extra by default). The extra 16 is a buffer to avoid expensive memory relocation when you append data.</div></div>
+</div>
+
+<!-- 25-26 Encapsulation -->
+<div class="s">
+  <div class="sl">Section 25–26</div>
+  <h2>Encapsulation — Protecting Your Data 🔒</h2>
+  <p>Encapsulation = <strong>making variables private</strong> + providing <strong>public methods</strong> to access them. Like your brain: nobody can read your thoughts directly — they have to <em>ask</em> you.</p>
+  <div class="cb"><div class="ch"><span class="l">java</span><span>encapsulation in action</span></div>
+<pre><span class="kw">class</span> <span class="ty">Human</span> <span class="p">{</span>
+    <span class="kw">private</span> <span class="ty">int</span> age <span class="p">=</span> <span class="nm">25</span><span class="p">;</span>       <span class="cm">// ❌ not accessible from outside</span>
+    <span class="kw">private</span> <span class="ty">String</span> name <span class="p">=</span> <span class="st">"Naveen"</span><span class="p">;</span>
+
+    <span class="kw">public</span> <span class="ty">int</span> <span class="fn">getAge</span><span class="p">()</span>        <span class="p">{</span> <span class="kw">return</span> age<span class="p">; }</span>     <span class="cm">// ✅ controlled access</span>
+    <span class="kw">public</span> <span class="ty">String</span> <span class="fn">getName</span><span class="p">()</span>    <span class="p">{</span> <span class="kw">return</span> name<span class="p">; }</span>    <span class="cm">// ✅ getter method</span>
+<span class="p">}</span>
+
+<span class="kw">class</span> <span class="ty">Demo</span> <span class="p">{</span>
+    <span class="kw">public static void</span> <span class="fn">main</span><span class="p">(</span><span class="ty">String</span><span class="p">[]</span> args<span class="p">)</span> <span class="p">{</span>
+        <span class="ty">Human</span> obj <span class="p">=</span> <span class="kw">new</span> <span class="ty">Human</span><span class="p">();</span>
+        <span class="cm">// obj.name;          ❌ ERROR — private!</span>
+        System<span class="p">.</span>out<span class="p">.</span><span class="fn">println</span><span class="p">(</span>obj<span class="p">.</span><span class="fn">getName</span><span class="p">());</span>  <span class="cm">// ✅ "Naveen"</span>
+    <span class="p">}</span>
+<span class="p">}</span></pre></div>
+  <div class="co brain"><div class="t">The Encapsulation Rule</div><div class="b"><strong>Every instance variable should be <code>private</code></strong>. Access is provided through <strong>public getter/setter methods</strong>. This way, you control <em>who</em> can read/write the data, and you can add validation logic (e.g., age can't be negative).<br><br>A <code>private</code> variable is accessible only within the <strong>same class</strong>. Methods of that class can read/write it, but nothing outside can touch it directly.</div></div>
+</div>
+
+<!-- 27 Recap -->
+<div class="s">
+  <div class="sl">Session Recap</div>
+  <h2>🎯 Grand Recap — Everything at a Glance</h2>
+  <div class="recap">
+    <h3>✅ Session 3 Complete Checklist</h3>
+    <ul>
+      <li>Every object has <strong>properties</strong> (variables) and <strong>behaviors</strong> (methods). Java is OOP — think in objects.</li>
+      <li><strong>Class</strong> = blueprint/design. <strong>Object</strong> = actual instance built from it. JVM creates objects.</li>
+      <li><code>new ClassName()</code> creates an object in <strong>heap memory</strong>. Returns a reference (address).</li>
+      <li>A <strong>reference variable</strong> (like <code>calc</code>) holds the address, not the object itself.</li>
+      <li>You must have an object to call methods of another class. <code>add()</code> alone won't work — need <code>calc.add()</code>.</li>
+      <li>Methods have: access modifier, return type, name, parameters, and body.</li>
+      <li><code>void</code> = returns nothing. Any other type = must have a <code>return</code> statement.</li>
+      <li><code>return</code> sends back a value AND immediately exits the method.</li>
+      <li><strong>Method overloading</strong>: same name, different parameters (number or type). Return type alone doesn't count.</li>
+      <li><strong>Stack</strong>: local variables, method frames, LIFO, destroyed when method returns.</li>
+      <li><strong>Heap</strong>: objects, instance variables, expandable, cleaned by Garbage Collector.</li>
+      <li><strong>Local variables</strong> = inside method → stack. <strong>Instance variables</strong> = inside class → heap (in the object).</li>
+      <li>Each method gets its own stack frame. Objects in heap are shared via references.</li>
+      <li>Multiple objects from same class = <strong>independent state</strong>. Changing one doesn't affect another.</li>
+      <li><strong>Array</strong> = one variable holding multiple values of the same type. <code>int[] nums = {3,7,2,4};</code></li>
+      <li>Array index starts at <strong>0</strong>. Size 4 → indices 0,1,2,3. Going beyond = <code>ArrayIndexOutOfBoundsException</code>.</li>
+      <li><code>nums.length</code> gives array size — use it instead of hardcoding numbers.</li>
+      <li>Default int array values = 0. <code>new int[4]</code> creates <code>{0,0,0,0}</code>.</li>
+      <li><strong>2D array</strong>: <code>int[][] nums = new int[3][4];</code> — 3 rows, 4 cols. Access: <code>nums[row][col]</code>.</li>
+      <li><strong>Jagged array</strong>: rows have different column sizes. Specify rows first, columns individually.</li>
+      <li>3D array: one more <code>[]</code>, one more nested loop. Each dimension = one loop.</li>
+      <li><code>Math.random()</code> → 0.0 to 1.0. Multiply + cast for integers: <code>(int)(Math.random()*10)</code>.</li>
+      <li><code>new Student[3]</code> creates an array for 3 references — NOT 3 objects. Create objects separately.</li>
+      <li>Printing an object directly gives its address. Print <code>obj.name</code> etc. for actual data.</li>
+      <li><strong>Enhanced for loop</strong>: <code>for (int n : nums)</code> — no counter, no index, auto-iterates. Best for reading.</li>
+      <li>For 2D enhanced loop: outer gives <code>int[]</code> rows, inner gives individual elements.</li>
+      <li>Array drawbacks: fixed size, slow insert/search, single type only, contiguous memory. Collections solve these.</li>
+      <li><strong>String</strong> is a class (capital S), not a primitive. Can create with literal or <code>new</code>.</li>
+      <li><code>charAt(i)</code>, <code>concat()</code>, <code>+</code> (concatenation), <code>length()</code> — key String methods.</li>
+      <li><code>+</code> is the ONLY operator that works with Strings.</li>
+      <li><strong>Strings are IMMUTABLE</strong>. "Changing" a string creates a new object; the old one stays unchanged.</li>
+      <li><strong>String Constant Pool</strong>: reuses identical string literals. <code>s1 == s2</code> if both point to same pool entry.</li>
+      <li><code>name = name + " Reddy"</code> → creates new "naveen Reddy" object, changes reference, old object GC'd.</li>
+      <li><strong>StringBuffer</strong> (thread-safe) and <strong>StringBuilder</strong> (faster, not thread-safe) = <strong>mutable</strong> strings.</li>
+      <li>StringBuffer default capacity = string length + 16. <code>capacity()</code> ≠ <code>length()</code>.</li>
+      <li>StringBuffer methods: <code>append()</code>, <code>insert()</code>, <code>deleteCharAt()</code>, <code>toString()</code>, <code>setLength()</code>, <code>ensureCapacity()</code>.</li>
+      <li><strong>Encapsulation</strong>: make instance variables <code>private</code>, provide <code>public</code> getter/setter methods.</li>
+      <li><code>private</code> = accessible only within the same class. Outside classes must use getters.</li>
+      <li>Rule: <strong>every instance variable should be private</strong>. Always. No exceptions.</li>
+    </ul>
+  </div>
+  <p style="text-align:center;margin-top:2.5rem;"><span class="hw">Session 3 conquered — you now think in objects! 🧱</span></p>
+  <p style="text-align:center;color:var(--dm);font-size:.85rem;margin-top:.5rem;">Next up: Notes #4 → Inheritance, Polymorphism, Abstract Classes & Interfaces</p>
+</div>
+
+</div>
+
+<div class="footer">
+  Complete Core Java Guide — Notes #3 &nbsp;|&nbsp; 27 Sections &nbsp;|&nbsp; OOP → Arrays → Strings → Encapsulation<br>
+  <span style="color:var(--ac);font-family:'JetBrains Mono',monospace;font-size:.7rem;margin-top:.5rem;display:inline-block;">Next up: Notes #4 → Inheritance, Polymorphism & More OOP</span>
+</div>
+</body>
+</html>
